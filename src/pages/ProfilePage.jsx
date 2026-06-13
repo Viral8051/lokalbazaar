@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../context/AuthContext'
 import PostCard from '../components/PostCard'
@@ -59,6 +58,7 @@ export default function ProfilePage() {
           <button onClick={() => setEditing(e => !e)} className="text-xs text-white/50 hover:text-white transition-colors">
             {editing ? 'Cancel' : '✏️ Edit'}
           </button>
+          <button onClick={() => navigate('/analytics')} className="text-xs text-white/50 hover:text-white transition-colors">📊 Analytics</button>
           <button onClick={signOut} className="text-xs text-white/30 hover:text-red-400 transition-colors">Logout</button>
         </div>
       </div>
