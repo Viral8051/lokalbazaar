@@ -144,7 +144,7 @@ export default function HomePage() {
       </div>
 
       {/* FAB */}
-      {profile?.is_seller && (
+      {profile?.role === 'seller' && (
         <button
           onClick={() => setShowNewPost(true)}
           className="fixed bottom-24 right-6 md:bottom-8 w-14 h-14 bg-[#f5a623] rounded-full flex items-center justify-center text-white text-2xl hover:bg-[#e09520] transition-colors z-20 shadow-lg"
