@@ -3,7 +3,10 @@ import { supabase } from '../lib/supabase'
 import { useAuth } from '../context/AuthContext'
 import { useNavigate } from 'react-router-dom'
 import NewPostModal from '../components/NewPostModal'
+import SearchBar from '../components/SearchBar'
+import SellerChip from '../components/SellerChip'
 import PostCard from '../components/PostCard'
+import Stories from '../components/Stories'
 import Layout from '../components/Layout'
 
 export default function HomePage() {
@@ -93,6 +96,11 @@ export default function HomePage() {
       </div>
 
       <div className="flex-1 overflow-y-auto scrollbar-hide">
+        {/* Stories */}
+        <div className="border-b border-white/5">
+          <Stories />
+        </div>
+
         {/* Nearby sellers */}
         {sellers.length > 0 && (
           <div className="px-4 pt-3 pb-1">
