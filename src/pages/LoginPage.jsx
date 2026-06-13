@@ -44,8 +44,9 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen bg-[#0f0a1e] flex flex-col items-center justify-center px-6">
+      {/* Logo */}
       <div className="mb-10 text-center">
-        <div className="text-4xl mb-2">🛍️</div>
+        <div className="text-5xl mb-3">🛍️</div>
         <h1 className="text-2xl font-bold text-[#f5a623]">LokalBazaar</h1>
         <p className="text-sm text-white/50 mt-1">Apna ghar, apna bazaar</p>
       </div>
@@ -53,8 +54,11 @@ export default function LoginPage() {
       <div className="w-full max-w-sm bg-white/5 border border-white/10 rounded-2xl p-6">
         {step === 'email' ? (
           <>
-            <h2 className="text-lg font-semibold text-white mb-1">Login karo</h2>
-            <p className="text-sm text-white/50 mb-5">Email pe OTP bhejenge</p>
+            {/* Heading — new + existing dono ke liye */}
+            <h2 className="text-lg font-semibold text-white mb-1">Shuru karo 👋</h2>
+            <p className="text-sm text-white/50 mb-5">
+              Naye ho ya purane — email daalo, OTP aayega
+            </p>
 
             <label className="text-xs text-white/50 mb-1 block">Email Address</label>
             <input
@@ -75,14 +79,35 @@ export default function LoginPage() {
             >
               {loading ? 'Bhej raha hun...' : 'OTP Bhejo →'}
             </button>
+
+            {/* How it works */}
+            <div className="mt-5 pt-4 border-t border-white/10">
+              <p className="text-xs text-white/30 text-center mb-3">Kaise kaam karta hai?</p>
+              <div className="flex flex-col gap-2">
+                {[
+                  { step: '1', text: 'Email daalo — OTP aayega' },
+                  { step: '2', text: 'Naye ho toh — Seller ya Buyer chuno' },
+                  { step: '3', text: 'Purane ho toh — seedha home pe!' },
+                ].map(s => (
+                  <div key={s.step} className="flex items-center gap-3">
+                    <div className="w-5 h-5 rounded-full bg-[#f5a623]/20 text-[#f5a623] text-[10px] font-bold flex items-center justify-center flex-shrink-0">
+                      {s.step}
+                    </div>
+                    <span className="text-xs text-white/40">{s.text}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
           </>
         ) : (
           <>
             <button onClick={() => setStep('email')} className="text-white/50 text-xs mb-4 flex items-center gap-1 hover:text-white transition-colors">
               ← Wapas jao
             </button>
-            <h2 className="text-lg font-semibold text-white mb-1">OTP verify karo</h2>
-            <p className="text-sm text-white/50 mb-5">{email} pe bheja gaya</p>
+            <h2 className="text-lg font-semibold text-white mb-1">OTP verify karo ✉️</h2>
+            <p className="text-sm text-white/50 mb-5">
+              <span className="text-white/70">{email}</span> pe bheja gaya
+            </p>
 
             <label className="text-xs text-white/50 mb-1 block">6-digit OTP</label>
             <input
@@ -101,7 +126,7 @@ export default function LoginPage() {
               disabled={loading}
               className="w-full bg-[#f5a623] text-white font-semibold py-3 rounded-xl text-sm hover:bg-[#e09520] transition-colors disabled:opacity-50"
             >
-              {loading ? 'Check kar raha hun...' : 'Verify & Login →'}
+              {loading ? 'Check kar raha hun...' : 'Verify karo →'}
             </button>
 
             <button onClick={sendOTP} className="w-full text-center text-xs text-white/40 mt-3 hover:text-white/60 transition-colors">
@@ -112,7 +137,7 @@ export default function LoginPage() {
       </div>
 
       <p className="text-xs text-white/20 mt-6 text-center">
-        Login karke aap hamare terms se agree karte hain.<br />Koi payment nahi, koi fraud nahi. ✓
+        Koi password nahi — sirf email OTP ✓<br />Koi payment nahi, koi fraud nahi ✓
       </p>
     </div>
   )
