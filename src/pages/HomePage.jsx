@@ -23,9 +23,9 @@ export default function HomePage() {
 
   async function fetchFeed() {
     setLoading(true)
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from('posts')
-      .select(`*, profiles(shop_name, owner_name, city, category, plan)`)
+      .select(`*, profiles!posts_seller_id_fkey(shop_name, owner_name, city, category, plan)`)
       .order('created_at', { ascending: false })
       .limit(30)
     setPosts(data || [])
@@ -33,7 +33,7 @@ export default function HomePage() {
   }
 
   async function fetchNearbySellers() {
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from('profiles')
       .select('id, shop_name, owner_name, category, city')
       .order('follower_count', { ascending: false })

@@ -29,7 +29,7 @@ export default function ExplorePage() {
   async function fetchAll() {
     setLoading(true)
     let sellerQuery = supabase.from('profiles').select('*').order('follower_count', { ascending: false })
-    let postQuery = supabase.from('posts').select(`*, profiles(shop_name, owner_name, city, category, plan)`).order('created_at', { ascending: false }).limit(20)
+    let postQuery = supabase.from('posts').select(`*, profiles!posts_seller_id_fkey(shop_name, owner_name, city, category, plan)`).order('created_at', { ascending: false }).limit(20)
 
     if (activeCategory) {
       sellerQuery = sellerQuery.eq('category', activeCategory)

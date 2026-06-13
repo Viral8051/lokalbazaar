@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../context/AuthContext'
 import PostCard from '../components/PostCard'
+import SubscriptionBanner from '../components/SubscriptionBanner'
 import NewPostModal from '../components/NewPostModal'
 import Layout from '../components/Layout'
 
@@ -22,7 +23,7 @@ export default function ProfilePage() {
   async function fetchPosts() {
     const { data } = await supabase
       .from('posts')
-      .select(`*, profiles(shop_name, owner_name, city, category, plan)`)
+      .select(`*, profiles!posts_seller_id_fkey(shop_name, owner_name, city, category, plan)`)
       .eq('seller_id', user.id)
       .order('created_at', { ascending: false })
     setPosts(data || [])
