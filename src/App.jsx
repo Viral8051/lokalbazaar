@@ -7,7 +7,9 @@ import ExplorePage from './pages/ExplorePage'
 import ProfilePage from './pages/ProfilePage'
 import SellerProfilePage from './pages/SellerProfilePage'
 import { ChatListPage, ChatWindowPage } from './pages/ChatPage'
+// import PremiumPage from './pages/PremiumPage'
 import InstallPrompt from './components/InstallPrompt'
+import NotificationSetup from './components/NotificationSetup'
 
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth()
@@ -31,6 +33,7 @@ function AppRoutes() {
       <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
       <Route path="/seller/:sellerId" element={<ProtectedRoute><SellerProfilePage /></ProtectedRoute>} />
       <Route path="/chat" element={<ProtectedRoute><ChatListPage /></ProtectedRoute>} />
+      {/* <Route path="/premium" element={<ProtectedRoute><PremiumPage /></ProtectedRoute>} /> */}
       <Route path="/chat/:sellerId" element={<ProtectedRoute><ChatWindowPage /></ProtectedRoute>} />
       <Route path="*" element={<Navigate to="/login" replace />} />
     </Routes>
@@ -40,10 +43,11 @@ function AppRoutes() {
 export default function App() {
   return (
     <BrowserRouter>
-      <InstallPrompt/>
       <AuthProvider>
         <AppRoutes />
-      </AuthProvider>
+        <InstallPrompt />
+        <NotificationSetup />
+    </AuthProvider>
     </BrowserRouter>
   )
 }
