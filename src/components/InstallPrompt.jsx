@@ -1,0 +1,62 @@
+import { useEffect, useState } from 'react'
+
+export default function InstallPrompt() {
+  const [prompt, setPrompt] = useState(null)
+  const [shown, setShown] = useState(false)
+  const [installed, setInstalled] = useState(false)
+
+  useEffect(() => {
+    // Check if already installed
+    if (window.matchMedia('(display-mode: standalone)').matches) {
+      setInstalled(true)
+      return
+    }
+
+    const handler = (e) => {
+      e.preventDefault()
+      setPrompt(e)
+      setShown(true)
+    }
+
+    window.addEventListener('beforeinstallprompt', handler)
+    return () => window.removeEventListener('beforeinstallprompt', handler)
+  }, [])
+
+  async function install() {
+    if (!prompt) return
+    prompt.prompt()
+    const { outcome } = await prompt.userChoice
+    if (outcome === 'accepted') setInstalled(true)
+    setShown(false)
+    setPrompt(null)
+  }
+
+  if (installed || !shown) return null
+
+  return (
+    <div className="fixed bottom-24 left-4 right-4 md:left-auto md:right-6 md:w-80 bg-[#1a1035] border border-[#f5a623]/30 rounded-2xl p-4 z-50 shadow-xl">
+      <div className="flex items-start gap-3">
+        <img src="/icon-192.png" alt="LokalBazaar" className="w-12 h-12 rounded-xl flex-shrink-0" />
+        <div className="flex-1">
+          <div className="text-sm font-semibold text-white">LokalBazaar install karo</div>
+          <div className="text-xs text-white/50 mt-0.5">Home screen pe add karo — offline bhi kaam karega</div>
+        </div>
+        <button onClick={() => setShown(false)} className="text-white/30 hover:text-white text-lg leading-none flex-shrink-0">✕</button>
+      </div>
+      <div className="flex gap-2 mt-3">
+        <button
+          onClick={() => setShown(false)}
+          className="flex-1 py-2 rounded-xl border border-white/10 text-xs text-white/50 hover:text-white transition-colors"
+        >
+          Baad mein
+        </button>
+        <button
+          onClick={install}
+          className="flex-1 py-2 rounded-xl bg-[#f5a623] text-white text-xs font-medium hover:bg-[#e09520] transition-colors"
+        >
+          Install karo 📲
+        </button>
+      </div>
+    </div>
+  )
+}
