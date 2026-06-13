@@ -80,7 +80,7 @@ export default function LoginPage() {
   async function sendOTP(r) {
     setLoading(true)
     setError('')
-    const { error } = await supabase.auth.signInWithOtp({ email })
+    const { error } = await supabase.auth.signInWithOtp({ email, options: { shouldCreateUser: false } })
     setLoading(false)
     if (error) { setError(error.message); return }
     setStep('otp')

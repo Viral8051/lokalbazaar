@@ -6,32 +6,43 @@ export default function InstallPrompt() {
   const [installed, setInstalled] = useState(false)
 
   useEffect(() => {
-    // Check if already installed
+    // Already installed check
     if (window.matchMedia('(display-mode: standalone)').matches) {
       setInstalled(true)
       return
     }
 
     const handler = (e) => {
+      // preventDefault yahan call karo — banner rokne ke liye
+      // phir hum manually prompt karenge
       e.preventDefault()
       setPrompt(e)
-      setShown(true)
+      // 3 second baad show karo
+      setTimeout(() => setShown(true), 3000)
     }
 
     window.addEventListener('beforeinstallprompt', handler)
+
+    window.addEventListener('appinstalled', () => {
+      setInstalled(true)
+      setShown(false)
+      setPrompt(null)
+    })
+
     return () => window.removeEventListener('beforeinstallprompt', handler)
   }, [])
 
   async function install() {
     if (!prompt) return
-    prompt.prompt()
+    // Ab prompt call karo — yahi sahi jagah hai
+    await prompt.prompt()
     const { outcome } = await prompt.userChoice
     if (outcome === 'accepted') setInstalled(true)
     setShown(false)
     setPrompt(null)
   }
 
-  if (installed || !shown) return null
+  if (installed || !shown || !prompt) return null
 
   return (
     <div className="fixed bottom-24 left-4 right-4 md:left-auto md:right-6 md:w-80 bg-[#1a1035] border border-[#f5a623]/30 rounded-2xl p-4 z-50 shadow-xl">
@@ -39,7 +50,7 @@ export default function InstallPrompt() {
         <img src="/icon-192.png" alt="LokalBazaar" className="w-12 h-12 rounded-xl flex-shrink-0" />
         <div className="flex-1">
           <div className="text-sm font-semibold text-white">LokalBazaar install karo</div>
-          <div className="text-xs text-white/50 mt-0.5">Home screen pe add karo — offline bhi kaam karega</div>
+          <div className="text-xs text-white/50 mt-0.5">Home screen pe add karo — app jaisa feel</div>
         </div>
         <button onClick={() => setShown(false)} className="text-white/30 hover:text-white text-lg leading-none flex-shrink-0">✕</button>
       </div>
