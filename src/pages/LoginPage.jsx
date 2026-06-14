@@ -80,7 +80,12 @@ export default function LoginPage() {
   async function sendOTP(r) {
     setLoading(true)
     setError('')
-    const { error } = await supabase.auth.signInWithOtp({ email, options: { shouldCreateUser: false } })
+    // r ya role dono check karo — agar koi role set ho raha hai matlab naya user hai
+    const isNewUser = !!(r || role)
+    const { error } = await supabase.auth.signInWithOtp({
+      email,
+      options: { shouldCreateUser: isNewUser }
+    })
     setLoading(false)
     if (error) { setError(error.message); return }
     setStep('otp')
