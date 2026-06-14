@@ -76,7 +76,7 @@ export default function ExplorePage() {
             <span className="text-sm">🔍</span>
             <input
               value={searchQuery}
-              onChange={e => setSearchQuery(e.target.value)}
+              onChange={setSearchQuery}
               placeholder="Seller ya product dhundo..."
               className="flex-1 bg-transparent text-white text-sm outline-none placeholder:text-white/30"
             />

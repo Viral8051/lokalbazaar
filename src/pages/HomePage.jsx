@@ -79,7 +79,7 @@ export default function HomePage() {
           <span className="text-sm">🔍</span>
           <input
             value={searchQuery}
-            onChange={e => setSearchQuery(e.target.value)}
+            onChange={setSearchQuery}
             placeholder="Saree, mithai, handicraft..."
             className="flex-1 bg-transparent text-white text-sm outline-none placeholder:text-white/30"
           />
