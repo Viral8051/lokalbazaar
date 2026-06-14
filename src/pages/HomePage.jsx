@@ -56,10 +56,12 @@ export default function HomePage() {
 
   const initials = (name) => name ? name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase() : '?'
 
-  const filteredPosts = searchQuery
+  const query = (searchQuery || '').toString().toLowerCase()
+
+  const filteredPosts = query
     ? posts.filter(p =>
-        p.caption?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        p.profiles?.shop_name?.toLowerCase().includes(searchQuery.toLowerCase())
+        p.caption?.toLowerCase().includes(query) ||
+        p.profiles?.shop_name?.toLowerCase().includes(query)
       )
     : posts
 

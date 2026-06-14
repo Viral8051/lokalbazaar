@@ -57,13 +57,21 @@ export default function ExplorePage() {
 
   const initials = (name) => name ? name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase() : '?'
 
-  const filteredSellers = searchQuery
-    ? sellers.filter(s => s.shop_name?.toLowerCase().includes(searchQuery.toLowerCase()) || s.city?.toLowerCase().includes(searchQuery.toLowerCase()))
-    : sellers
+  const query = (searchQuery || '').toString().toLowerCase()
 
-  const filteredPosts = searchQuery
-    ? posts.filter(p => p.caption?.toLowerCase().includes(searchQuery.toLowerCase()) || p.profiles?.shop_name?.toLowerCase().includes(searchQuery.toLowerCase()))
-    : posts
+  const filteredSellers = query
+  ? sellers.filter(s =>
+      s.shop_name?.toLowerCase().includes(query) ||
+      s.city?.toLowerCase().includes(query)
+    )
+  : sellers
+
+  const filteredPosts = query
+  ? posts.filter(p =>
+      p.caption?.toLowerCase().includes(query) ||
+      p.profiles?.shop_name?.toLowerCase().includes(query)
+    )
+  : posts
 
   return (
     <Layout active="explore">
