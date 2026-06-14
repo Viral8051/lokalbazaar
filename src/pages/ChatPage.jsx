@@ -207,41 +207,40 @@ export function ChatWindowPage() {
   useEffect(() => { bottomRef.current?.scrollIntoView({ behavior: 'smooth' }) }, [messages])
 
   function setupRealtime() {
-    const ch = supabase
-      .channel(`chat-${[user.id, sellerId].sort().join('-')}`)
-      // Naya message aaya
-      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, async (p) => {
-        const msg = p.new
-        const isThis = (msg.sender_id === user.id && msg.receiver_id === sellerId) ||
-                       (msg.sender_id === sellerId && msg.receiver_id === user.id)
-        if (!isThis) return
+  const ch = supabase
+    .channel(`chat-${[user.id, sellerId].sort().join('-')}`)
+    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, async (p) => {
+      console.log('🟢 INSERT received:', p.new)
+      const msg = p.new
+      const isThis = (msg.sender_id === user.id && msg.receiver_id === sellerId) ||
+                     (msg.sender_id === sellerId && msg.receiver_id === user.id)
+      if (!isThis) return
 
-        if (msg.receiver_id === user.id) {
-          // Incoming — turant read mark karo
-          await supabase.from('messages').update({ read: true, delivered: true }).eq('id', msg.id)
-          msg.read = true; msg.delivered = true
-        }
+      if (msg.receiver_id === user.id) {
+        await supabase.from('messages').update({ read: true, delivered: true }).eq('id', msg.id)
+        msg.read = true; msg.delivered = true
+      }
 
-        setMessages(m => {
-          // temp replace karo
-          const noTemp = m.filter(x => !x.id?.toString().startsWith('temp-'))
-          if (noTemp.find(x => x.id === msg.id)) return m
-          return [...noTemp, msg]
-        })
+      setMessages(m => {
+        const noTemp = m.filter(x => !x.id?.toString().startsWith('temp-'))
+        if (noTemp.find(x => x.id === msg.id)) return m
+        return [...noTemp, msg]
       })
-      // Read/delivered status update — sender ko double tick dikhao
-      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'messages' }, (p) => {
-        const updated = p.new
-        // Sirf is conversation ke messages
-        const isThis = (updated.sender_id === user.id && updated.receiver_id === sellerId) ||
-                       (updated.sender_id === sellerId && updated.receiver_id === user.id)
-        if (!isThis) return
-        setMessages(m => m.map(x => x.id === updated.id ? { ...x, ...updated } : x))
-      })
-      .subscribe()
+    })
+    .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'messages' }, (p) => {
+      console.log('🔵 UPDATE received:', p.new)
+      const updated = p.new
+      const isThis = (updated.sender_id === user.id && updated.receiver_id === sellerId) ||
+                     (updated.sender_id === sellerId && updated.receiver_id === user.id)
+      if (!isThis) return
+      setMessages(m => m.map(x => x.id === updated.id ? { ...x, ...updated } : x))
+    })
+    .subscribe((status) => {
+      console.log('📡 Realtime status:', status)
+    })
 
-    channelRef.current = ch
-  }
+  channelRef.current = ch
+}
 
   async function fetchPartner() {
     const { data } = await supabase
