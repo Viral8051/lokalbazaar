@@ -1,22 +1,58 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 
 export default function SearchBar({ value, onChange, placeholder = 'Search...' }) {
   const [listening, setListening] = useState(false)
+  const recognitionRef = useRef(null)
 
   function startVoice() {
-    if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) return
     const SR = window.SpeechRecognition || window.webkitSpeechRecognition
-    const recognition = new SR()
-    recognition.lang = 'hi-IN'
-    recognition.interimResults = false
-    recognition.onstart = () => setListening(true)
-    recognition.onresult = (e) => onChange(e.results[0][0].transcript)
-    recognition.onerror = (e) => {
-      console.log('Voice error:', e.error)
+    if (!SR) { alert('Voice search support nahi hai is browser mein'); return }
+
+    // Pehle se chal raha hai toh band karo
+    if (listening) {
+      recognitionRef.current?.stop()
+      setListening(false)
+      return
+    }
+
+    try {
+      const recognition = new SR()
+      recognitionRef.current = recognition
+
+      recognition.lang = 'hi-IN'
+      recognition.continuous = false
+      recognition.interimResults = true
+      recognition.maxAlternatives = 1
+
+      recognition.onstart = () => {
+        console.log('🎙️ Voice started')
+        setListening(true)
+      }
+
+      recognition.onresult = (e) => {
+        const transcript = e.results[0][0].transcript
+        console.log('📝 Transcript:', transcript)
+        onChange(transcript)
+      }
+
+      recognition.onerror = (e) => {
+        console.log('❌ Voice error:', e.error, e.message)
+        setListening(false)
+      }
+
+      recognition.onend = () => {
+        console.log('🔴 Voice ended')
+        setListening(false)
+      }
+
+      // Android pe seedha start — koi async nahi
+      recognition.start()
+      console.log('✅ recognition.start() called')
+
+    } catch (err) {
+      console.log('❌ Exception:', err)
       setListening(false)
     }
-    recognition.onend = () => setListening(false)
-    recognition.start()
   }
 
   return (
@@ -35,10 +71,11 @@ export default function SearchBar({ value, onChange, placeholder = 'Search...' }
       </div>
       <button
         onClick={startVoice}
-        className={`w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 transition-colors ${
-          listening ? 'bg-red-500 animate-pulse' : 'bg-[#f5a623] hover:bg-[#e09520]'
+        className={`w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 transition-all ${
+          listening
+            ? 'bg-red-500 scale-110 shadow-lg shadow-red-500/40'
+            : 'bg-[#f5a623] hover:bg-[#e09520]'
         }`}
-        title="Voice se bolo — Hindi ya Gujarati"
       >
         <span className="text-base">{listening ? '⏺' : '🎙️'}</span>
       </button>
