@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { supabase } from '../lib/supabase'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 
 const CATEGORIES = [
   { id: 'saree', label: 'Saree & Textile', emoji: '🥻' },
@@ -15,8 +15,11 @@ const CATEGORIES = [
 
 export default function LoginPage() {
   const navigate = useNavigate()
-  const [step, setStep] = useState('email')
-  const [email, setEmail] = useState('')
+  const location = useLocation()
+  const [email, setEmail] = useState(location.state?.prefillEmail || '')
+  const [step, setStep] = useState(
+    location.state?.prefillEmail ? 'email' : 'email'
+  )
   const [otp, setOtp] = useState('')
   const [role, setRole] = useState(null)
   const [loading, setLoading] = useState(false)
