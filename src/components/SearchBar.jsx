@@ -11,7 +11,10 @@ export default function SearchBar({ value, onChange, placeholder = 'Search...' }
     recognition.interimResults = false
     recognition.onstart = () => setListening(true)
     recognition.onresult = (e) => onChange(e.results[0][0].transcript)
-    recognition.onerror = () => setListening(false)
+    recognition.onerror = (e) => {
+      console.log('Voice error:', e.error)
+      setListening(false)
+    }
     recognition.onend = () => setListening(false)
     recognition.start()
   }
