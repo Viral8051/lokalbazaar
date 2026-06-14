@@ -80,12 +80,20 @@ export default function LoginPage() {
     setLoading(true)
     setError('')
     const isNewUser = !!(r || role)
-    const { error } = await supabase.auth.signInWithOtp({
+    const { data, error } = await supabase.auth.signInWithOtp({
       email,
       options: { shouldCreateUser: isNewUser }
     })
     setLoading(false)
     if (error) { setError(error.message); return }
+    
+    // Email confirmation OFF hai — seedha session mil jaata hai
+    if (data?.session) {
+      navigate('/home')
+      return
+    }
+    
+    // Email confirmation ON hai — OTP step dikhao
     setStep('otp')
   }
 
