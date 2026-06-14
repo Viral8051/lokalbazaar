@@ -48,7 +48,10 @@ export default function HomePage() {
     recognition.lang = 'hi-IN'
     recognition.interimResults = false
     recognition.onstart = () => setListening(true)
-    recognition.onresult = (e) => setSearchQuery(e.results[0][0].transcript)
+    recognition.onresult = (e) => {
+      const transcript = e.results[0][0].transcript
+      setSearchQuery(String(transcript))  // Force string
+    }
     recognition.onerror = () => setListening(false)
     recognition.onend = () => setListening(false)
     recognition.start()
@@ -56,14 +59,13 @@ export default function HomePage() {
 
   const initials = (name) => name ? name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase() : '?'
 
-  const query = (searchQuery || '').toString().toLowerCase()
-
+  const query = typeof searchQuery === 'string' ? searchQuery.toLowerCase() : ''
   const filteredPosts = query
-    ? posts.filter(p =>
-        p.caption?.toLowerCase().includes(query) ||
-        p.profiles?.shop_name?.toLowerCase().includes(query)
-      )
-    : posts
+  ? posts.filter(p =>
+      p.caption?.toLowerCase().includes(query) ||
+      p.profiles?.shop_name?.toLowerCase().includes(query)
+    )
+  : posts
 
   return (
     <Layout active="home">
