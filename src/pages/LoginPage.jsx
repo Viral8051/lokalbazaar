@@ -55,7 +55,7 @@ export default function LoginPage() {
   function selectRole(r) {
     setRole(r)
     if (r === 'buyer') {
-      sendOTP('buyer')
+      setStep('buyer-details')
     } else {
       setStep('details')
     }
@@ -116,6 +116,7 @@ export default function LoginPage() {
       const { error: upsertError } = await supabase.from('profiles').upsert({
         id: userId,
         email,
+        phone: pendingProfile.phone || null, 
         role: role || 'buyer',
         is_seller: isSeller,
         owner_name: pendingProfile.owner_name || email.split('@')[0],
@@ -300,6 +301,57 @@ export default function LoginPage() {
               </div>
               {loading && <p className="text-center text-white/40 text-xs">OTP bhej raha hun...</p>}
               <button onClick={() => setStep('details')} className="w-full text-center text-xs text-white/30 mt-2 hover:text-white/50 transition-colors">← Wapas</button>
+            </>
+          )}
+
+          {/* STEP — Buyer Details */}
+          {step === 'buyer-details' && (
+            <>
+              <h2 className="text-lg font-semibold text-white mb-1">Apna parichay do 👋</h2>
+              <p className="text-sm text-white/50 mb-5">Thoda basic info chahiye</p>
+              <div className="space-y-3">
+                <div>
+                  <label className="text-xs text-white/50 mb-1 block">Tumhara naam *</label>
+                  <input
+                    value={pendingProfile.owner_name}
+                    onChange={e => updateProfile('owner_name', e.target.value)}
+                    placeholder="Full name"
+                    className="w-full bg-white/10 border border-white/10 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-[#f5a623] transition-colors placeholder:text-white/30"
+                  />
+                </div>
+                <div>
+                  <label className="text-xs text-white/50 mb-1 block">Phone number (optional)</label>
+                  <input
+                    value={pendingProfile.phone || ''}
+                    onChange={e => updateProfile('phone', e.target.value)}
+                    placeholder="+91 98765 43210"
+                    type="tel"
+                    className="w-full bg-white/10 border border-white/10 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-[#f5a623] transition-colors placeholder:text-white/30"
+                  />
+                </div>
+                <div>
+                  <label className="text-xs text-white/50 mb-1 block">Sheher</label>
+                  <input
+                    value={pendingProfile.city}
+                    onChange={e => updateProfile('city', e.target.value)}
+                    placeholder="Jamnagar"
+                    className="w-full bg-white/10 border border-white/10 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-[#f5a623] transition-colors placeholder:text-white/30"
+                  />
+                </div>
+              </div>
+              {error && <p className="text-red-400 text-xs mt-2">{error}</p>}
+              <button
+                onClick={() => {
+                  if (!pendingProfile.owner_name) { setError('Apna naam daalo'); return }
+                  setError('')
+                  sendOTP('buyer')
+                }}
+                disabled={loading}
+                className="w-full bg-[#f5a623] text-white font-semibold py-3 rounded-xl text-sm mt-4 hover:bg-[#e09520] transition-colors disabled:opacity-50"
+              >
+                {loading ? 'OTP bhej raha hun...' : 'OTP Bhejo →'}
+              </button>
+              <button onClick={() => setStep('role')} className="w-full text-center text-xs text-white/30 mt-3 hover:text-white/50 transition-colors">← Wapas</button>
             </>
           )}
 
