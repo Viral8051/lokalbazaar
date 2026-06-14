@@ -15,7 +15,7 @@ const CATEGORIES = [
 
 export default function LoginPage() {
   const navigate = useNavigate()
-  const [step, setStep] = useState('email')   // email | role | details | category | otp
+  const [step, setStep] = useState('email')
   const [email, setEmail] = useState('')
   const [otp, setOtp] = useState('')
   const [role, setRole] = useState(null)
@@ -55,7 +55,6 @@ export default function LoginPage() {
   function selectRole(r) {
     setRole(r)
     if (r === 'buyer') {
-      // Buyer ko details nahi chahiye — seedha OTP
       sendOTP('buyer')
     } else {
       setStep('details')
@@ -76,11 +75,10 @@ export default function LoginPage() {
     await sendOTP('seller')
   }
 
-  // Send OTP
+  // Send OTP — naye user ke liye shouldCreateUser: true
   async function sendOTP(r) {
     setLoading(true)
     setError('')
-    // r ya role dono check karo — agar koi role set ho raha hai matlab naya user hai
     const isNewUser = !!(r || role)
     const { error } = await supabase.auth.signInWithOtp({
       email,
@@ -103,18 +101,20 @@ export default function LoginPage() {
 
     if (error) { setError(error.message); setLoading(false); return }
 
+    const userId = data.user?.id
+    if (!userId) { setError('Login fail hua, dobara try karo'); setLoading(false); return }
+
     // Check if new user — save profile
     const { data: existing } = await supabase
       .from('profiles')
       .select('id')
-      .eq('id', data.user.id)
+      .eq('id', userId)
       .maybeSingle()
 
     if (!existing) {
-      // Save new profile
       const isSeller = role === 'seller'
-      await supabase.from('profiles').upsert({
-        id: data.user.id,
+      const { error: upsertError } = await supabase.from('profiles').upsert({
+        id: userId,
         email,
         role: role || 'buyer',
         is_seller: isSeller,
@@ -128,6 +128,13 @@ export default function LoginPage() {
         plan: 'free',
         created_at: new Date().toISOString(),
       })
+
+      if (upsertError) {
+        console.error('Profile save error:', upsertError)
+        setError('Profile save nahi hua: ' + upsertError.message)
+        setLoading(false)
+        return
+      }
     }
 
     setLoading(false)
@@ -138,7 +145,6 @@ export default function LoginPage() {
   const steps = role === 'seller'
     ? ['email', 'role', 'details', 'category', 'otp']
     : ['email', 'role', 'otp']
-  const currentStepIdx = steps.indexOf(step)
   const isNewUserFlow = ['role', 'details', 'category'].includes(step)
 
   return (
@@ -151,10 +157,10 @@ export default function LoginPage() {
       </div>
 
       <div className="w-full max-w-sm">
-        {/* Progress bar — only for new user flow */}
+        {/* Progress bar */}
         {isNewUserFlow && (
           <div className="flex gap-1.5 mb-6">
-            {(role === 'seller' ? ['role', 'details', 'category', 'otp'] : ['role', 'otp']).map((s, i) => (
+            {(role === 'seller' ? ['role', 'details', 'category', 'otp'] : ['role', 'otp']).map((s) => (
               <div key={s} className={`flex-1 h-1 rounded-full transition-colors ${
                 steps.indexOf(step) > steps.indexOf(s) || step === s ? 'bg-[#f5a623]' : 'bg-white/10'
               }`} />
@@ -169,7 +175,6 @@ export default function LoginPage() {
             <>
               <h2 className="text-lg font-semibold text-white mb-1">Shuru karo 👋</h2>
               <p className="text-sm text-white/50 mb-5">Apni email daalo</p>
-
               <label className="text-xs text-white/50 mb-1 block">Email Address</label>
               <input
                 type="email"
@@ -315,7 +320,6 @@ export default function LoginPage() {
                   <p className="text-sm text-white/50 mb-4">OTP verify karo — seedha home pe jaoge</p>
                 </>
               )}
-
               <label className="text-xs text-white/50 mb-1 block">
                 6-digit OTP — <span className="text-white/60">{email}</span> pe bheja
               </label>
