@@ -77,25 +77,61 @@ export default function LoginPage() {
 
   // Send OTP — naye user ke liye shouldCreateUser: true
   async function sendOTP(r) {
-    setLoading(true)
-    setError('')
-    const isNewUser = !!(r || role)
-    const { data, error } = await supabase.auth.signInWithOtp({
-      email,
-      options: { shouldCreateUser: isNewUser }
-    })
-    setLoading(false)
-    if (error) { setError(error.message); return }
-    
-    // Email confirmation OFF hai — seedha session mil jaata hai
-    if (data?.session) {
-      navigate('/home')
-      return
+  setLoading(true)
+  setError('')
+  const isNewUser = !!(r || role)
+  const { data, error } = await supabase.auth.signInWithOtp({
+    email,
+    options: { shouldCreateUser: isNewUser }
+  })
+  setLoading(false)
+  if (error) { setError(error.message); return }
+
+  // Email confirmation OFF hai — seedha session mil jaata hai
+  if (data?.session) {
+    const userId = data.session.user.id
+    const currentRole = r || role
+
+    // Check if profile already exists
+    const { data: existing } = await supabase
+      .from('profiles')
+      .select('id')
+      .eq('id', userId)
+      .maybeSingle()
+
+    if (!existing) {
+      const isSeller = currentRole === 'seller'
+      const { error: upsertError } = await supabase.from('profiles').upsert({
+        id: userId,
+        email,
+        phone: pendingProfile.phone || null,
+        role: currentRole || 'buyer',
+        is_seller: isSeller,
+        owner_name: pendingProfile.owner_name || email.split('@')[0],
+        shop_name: isSeller ? pendingProfile.shop_name : null,
+        city: pendingProfile.city || 'Jamnagar',
+        bio: pendingProfile.bio || null,
+        category: isSeller ? pendingProfile.category : null,
+        post_count: 0,
+        follower_count: 0,
+        plan: 'free',
+        created_at: new Date().toISOString(),
+      })
+
+      if (upsertError) {
+        console.error('Profile save error:', upsertError)
+        setError('Profile save nahi hua: ' + upsertError.message)
+        return
+      }
     }
-    
-    // Email confirmation ON hai — OTP step dikhao
-    setStep('otp')
+
+    navigate('/home')
+    return
   }
+
+  // Email confirmation ON hai — OTP step dikhao
+  setStep('otp')
+}
 
   // Step 5 — Verify OTP + save profile if new
   async function verifyOTP() {
