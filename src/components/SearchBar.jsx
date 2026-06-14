@@ -61,7 +61,10 @@ export default function SearchBar({ value, onChange, placeholder = 'Search...' }
         <span className="text-sm text-white/40">🔍</span>
         <input
           value={value}
-          onChange={e => onChange(e.target.value)}
+          onChange={e => {
+            console.log('input onChange:', e, typeof e)
+            onChange(e.target.value)
+          }}
           placeholder={placeholder}
           className="flex-1 bg-transparent text-white text-sm outline-none placeholder:text-white/30"
         />
