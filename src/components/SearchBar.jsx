@@ -67,7 +67,7 @@ export default function SearchBar({ value, onChange, placeholder = 'Search...' }
             : 'bg-[#f5a623] hover:bg-[#e09520]'
         }`}
       >
-        <span className="text-base">🎙️</span>
+        <span className="text-base"><Mic/></span>
       </button>
 
       {/* iOS animated hint */}
