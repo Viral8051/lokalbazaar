@@ -16,9 +16,9 @@ export default function ThemeToggle({ className = '' }) {
       title={theme === 'dark' ? 'Light mode pe switch karo' : 'Dark mode pe switch karo'}
     >
       <span className="text-sm">{theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}</span>
-      <span className="text-xs font-medium">
+      {/* <span className="text-xs font-medium">
         {theme === 'dark' ? 'Light' : 'Dark'}
-      </span>
+      </span> */}
     </button>
   )
 }
