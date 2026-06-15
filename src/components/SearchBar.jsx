@@ -1,4 +1,5 @@
 import { useState, useRef } from 'react'
+import { Mic } from 'lucide-react';
 
 const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent)
 
@@ -74,7 +75,7 @@ export default function SearchBar({ value, onChange, placeholder = 'Search...' }
         <div className="absolute -bottom-16 right-0 z-50 flex flex-col items-end">
           {/* Arrow pointing down-right toward keyboard mic */}
           <div className="flex items-center gap-2 bg-[#1a1035] border border-[#f5a623]/40 rounded-2xl px-3 py-2 shadow-xl">
-            <span className="text-sm">🎙️</span>
+            <span className="text-sm"><Mic/></span>
             <span className="text-xs text-white/80 whitespace-nowrap">Keyboard pe mic dabao</span>
           </div>
           {/* Animated bouncing arrow */}
