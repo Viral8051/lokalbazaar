@@ -1,452 +1,319 @@
 import { useState } from 'react'
 import { supabase } from '../lib/supabase'
 import { useNavigate, useLocation } from 'react-router-dom'
+import ThemeToggle from '../components/ThemeToggle'
 
 const CATEGORIES = [
-  { id: 'saree', label: 'Saree & Textile', emoji: '🥻' },
-  { id: 'food', label: 'Homemade Food', emoji: '🍱' },
-  { id: 'sweets', label: 'Mithai & Sweets', emoji: '🍬' },
-  { id: 'handicraft', label: 'Handicraft', emoji: '🏺' },
-  { id: 'jewellery', label: 'Jewellery', emoji: '💍' },
-  { id: 'beauty', label: 'Beauty & Skincare', emoji: '🧴' },
-  { id: 'clothing', label: 'Clothing', emoji: '👗' },
-  { id: 'other', label: 'Other', emoji: '🛍️' },
+  { id: 'saree',     label: 'Saree & Textile',  emoji: '🥻' },
+  { id: 'food',      label: 'Homemade Food',     emoji: '🍱' },
+  { id: 'sweets',    label: 'Mithai & Sweets',   emoji: '🍬' },
+  { id: 'handicraft',label: 'Handicraft',        emoji: '🏺' },
+  { id: 'jewellery', label: 'Jewellery',         emoji: '💍' },
+  { id: 'beauty',    label: 'Beauty & Skincare', emoji: '🧴' },
+  { id: 'clothing',  label: 'Clothing',          emoji: '👗' },
+  { id: 'other',     label: 'Other',             emoji: '🛍️' },
 ]
 
+const inp = {
+  width: '100%',
+  background: 'var(--bg-input)',
+  border: '1px solid var(--border-md)',
+  borderRadius: 14,
+  padding: '12px 16px',
+  color: 'var(--text)',
+  fontSize: 14,
+  outline: 'none',
+  fontFamily: 'inherit',
+}
+
 export default function LoginPage() {
-  const navigate = useNavigate()
-  const location = useLocation()
-  const [email, setEmail] = useState(location.state?.prefillEmail || '')
-  const [step, setStep] = useState(
-    location.state?.prefillEmail ? 'email' : 'email'
-  )
-  const [otp, setOtp] = useState('')
-  const [role, setRole] = useState(null)
+  const navigate  = useNavigate()
+  const location  = useLocation()
+  const [step, setStep]       = useState('email')
+  const [email, setEmail]     = useState(location.state?.prefillEmail || '')
+  const [otp, setOtp]         = useState('')
+  const [role, setRole]       = useState(null)
   const [loading, setLoading] = useState(false)
   const [checking, setChecking] = useState(false)
-  const [error, setError] = useState('')
+  const [error, setError]     = useState('')
   const [pendingProfile, setPendingProfile] = useState({
-    owner_name: '', shop_name: '', city: 'Jamnagar', bio: '', category: ''
+    owner_name: '', shop_name: '', city: 'Jamnagar', bio: '', category: '', phone: ''
   })
 
-  function updateProfile(key, val) {
-    setPendingProfile(p => ({ ...p, [key]: val }))
-  }
+  const upd = (k, v) => setPendingProfile(p => ({ ...p, [k]: v }))
 
-  // Step 1 — Check email
   async function checkEmail() {
     setError('')
     if (!email.includes('@')) { setError('Valid email daalo'); return }
     setChecking(true)
-    const { data } = await supabase
-      .from('profiles')
-      .select('id')
-      .eq('email', email)
-      .maybeSingle()
+    const { data } = await supabase.from('profiles').select('id').eq('email', email).maybeSingle()
     setChecking(false)
-
-    if (data) {
-      // Purana user — seedha OTP
-      await sendOTP()
-    } else {
-      // Naya user — pehle role chuno
-      setStep('role')
-    }
+    if (data) await sendOTP()
+    else setStep('role')
   }
 
-  // Step 2 — Role select
   function selectRole(r) {
     setRole(r)
-    if (r === 'buyer') {
-      setStep('buyer-details')
-    } else {
-      setStep('details')
-    }
+    if (r === 'buyer') setStep('buyer-details')
+    else setStep('details')
   }
 
-  // Step 3 — Seller details validate
   function goToCategory() {
     if (!pendingProfile.owner_name) { setError('Apna naam daalo'); return }
-    if (!pendingProfile.shop_name) { setError('Dukaan ka naam daalo'); return }
-    setError('')
-    setStep('category')
+    if (!pendingProfile.shop_name)  { setError('Dukaan ka naam daalo'); return }
+    setError(''); setStep('category')
   }
 
-  // Step 4 — Category select then OTP
   async function selectCategory(cat) {
-    updateProfile('category', cat)
+    upd('category', cat)
     await sendOTP('seller')
   }
 
-  // Send OTP — naye user ke liye shouldCreateUser: true
   async function sendOTP(r) {
-  setLoading(true)
-  setError('')
-  const isNewUser = !!(r || role)
-  const { data, error } = await supabase.auth.signInWithOtp({
-    email,
-    options: { shouldCreateUser: isNewUser }
-  })
-  setLoading(false)
-  if (error) { setError(error.message); return }
-
-  // Email confirmation OFF hai — seedha session mil jaata hai
-  if (data?.session) {
-    const userId = data.session.user.id
-    const currentRole = r || role
-
-    // Check if profile already exists
-    const { data: existing } = await supabase
-      .from('profiles')
-      .select('id')
-      .eq('id', userId)
-      .maybeSingle()
-
-    if (!existing) {
-      const isSeller = currentRole === 'seller'
-      const { error: upsertError } = await supabase.from('profiles').upsert({
-        id: userId,
-        email,
-        phone: pendingProfile.phone || null,
-        role: currentRole || 'buyer',
-        is_seller: isSeller,
-        owner_name: pendingProfile.owner_name || email.split('@')[0],
-        shop_name: isSeller ? pendingProfile.shop_name : null,
-        city: pendingProfile.city || 'Jamnagar',
-        bio: pendingProfile.bio || null,
-        category: isSeller ? pendingProfile.category : null,
-        post_count: 0,
-        follower_count: 0,
-        plan: 'free',
-        created_at: new Date().toISOString(),
-      })
-
-      if (upsertError) {
-        console.error('Profile save error:', upsertError)
-        setError('Profile save nahi hua: ' + upsertError.message)
-        return
-      }
+    setLoading(true); setError('')
+    const isNewUser = !!(r || role)
+    const { data, error } = await supabase.auth.signInWithOtp({
+      email, options: { shouldCreateUser: isNewUser }
+    })
+    setLoading(false)
+    if (error) { setError(error.message); return }
+    if (data?.session) {
+      await saveProfile(data.session.user.id, r)
+      navigate('/home'); return
     }
-
-    navigate('/home')
-    return
+    setStep('otp')
   }
 
-  // Email confirmation ON hai — OTP step dikhao
-  setStep('otp')
-}
+  async function saveProfile(userId, r) {
+    const currentRole = r || role
+    const { data: existing } = await supabase.from('profiles').select('id').eq('id', userId).maybeSingle()
+    if (existing) return
+    const isSeller = currentRole === 'seller'
+    await supabase.from('profiles').upsert({
+      id: userId, email,
+      phone: pendingProfile.phone || null,
+      role: currentRole || 'buyer',
+      is_seller: isSeller,
+      owner_name: pendingProfile.owner_name || email.split('@')[0],
+      shop_name:  isSeller ? pendingProfile.shop_name  : null,
+      city:       pendingProfile.city || 'Jamnagar',
+      bio:        pendingProfile.bio  || null,
+      category:   isSeller ? pendingProfile.category   : null,
+      post_count: 0, follower_count: 0, plan: 'free',
+      created_at: new Date().toISOString(),
+    })
+  }
 
-  // Step 5 — Verify OTP + save profile if new
   async function verifyOTP() {
     setError('')
     if (!otp || otp.length !== 6) { setError('6 digit OTP daalo'); return }
     setLoading(true)
-
-    const { data, error } = await supabase.auth.verifyOtp({
-      email, token: otp, type: 'email'
-    })
-
+    const { data, error } = await supabase.auth.verifyOtp({ email, token: otp, type: 'email' })
     if (error) { setError(error.message); setLoading(false); return }
-
     const userId = data.user?.id
     if (!userId) { setError('Login fail hua, dobara try karo'); setLoading(false); return }
-
-    // Check if new user — save profile
-    const { data: existing } = await supabase
-      .from('profiles')
-      .select('id')
-      .eq('id', userId)
-      .maybeSingle()
-
-    if (!existing) {
-      const isSeller = role === 'seller'
-      const { error: upsertError } = await supabase.from('profiles').upsert({
-        id: userId,
-        email,
-        phone: pendingProfile.phone || null, 
-        role: role || 'buyer',
-        is_seller: isSeller,
-        owner_name: pendingProfile.owner_name || email.split('@')[0],
-        shop_name: isSeller ? pendingProfile.shop_name : null,
-        city: pendingProfile.city || 'Jamnagar',
-        bio: pendingProfile.bio || null,
-        category: isSeller ? pendingProfile.category : null,
-        post_count: 0,
-        follower_count: 0,
-        plan: 'free',
-        created_at: new Date().toISOString(),
-      })
-
-      if (upsertError) {
-        console.error('Profile save error:', upsertError)
-        setError('Profile save nahi hua: ' + upsertError.message)
-        setLoading(false)
-        return
-      }
-    }
-
+    await saveProfile(userId, null)
     setLoading(false)
     navigate('/home')
   }
 
-  // Progress indicator
-  const steps = role === 'seller'
-    ? ['email', 'role', 'details', 'category', 'otp']
-    : ['email', 'role', 'otp']
-  const isNewUserFlow = ['role', 'details', 'category'].includes(step)
+  const steps = role === 'seller' ? ['email','role','details','category','otp'] : ['email','role','otp']
+  const isNewFlow = ['role','details','category','buyer-details'].includes(step)
+
+  const cardStyle = {
+    background: 'var(--bg-card)',
+    border: '1px solid var(--border)',
+    borderRadius: 20,
+    padding: '24px 20px',
+  }
+
+  const btnPrimary = {
+    width: '100%', background: '#FF4C29', color: 'white',
+    fontWeight: 700, fontSize: 14, padding: '13px',
+    border: 'none', borderRadius: 14, cursor: 'pointer',
+    fontFamily: 'inherit', marginTop: 8,
+  }
+
+  const btnBack = {
+    width: '100%', background: 'transparent', color: 'var(--text-hint)',
+    fontSize: 12, padding: '10px', border: 'none',
+    cursor: 'pointer', fontFamily: 'inherit',
+  }
+
+  const label = { fontSize: 12, color: 'var(--text-sub)', marginBottom: 6, display: 'block' }
 
   return (
-    <div className="min-h-screen bg-[#0f0a1e] flex flex-col items-center justify-center px-6 py-10">
-      {/* Logo */}
-      <div className="mb-8 text-center">
-        <div className="text-5xl mb-3">🛍️</div>
-        <h1 className="text-2xl font-bold text-[#f5a623]">LokalBazaar</h1>
-        <p className="text-sm text-white/50 mt-1">Apna ghar, apna bazaar</p>
+    <div style={{ minHeight: '100vh', background: 'var(--bg)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '24px 20px' }}>
+
+      {/* Theme toggle */}
+      <div style={{ position: 'absolute', top: 16, right: 16 }}>
+        <ThemeToggle />
       </div>
 
-      <div className="w-full max-w-sm">
-        {/* Progress bar */}
-        {isNewUserFlow && (
-          <div className="flex gap-1.5 mb-6">
-            {(role === 'seller' ? ['role', 'details', 'category', 'otp'] : ['role', 'otp']).map((s) => (
-              <div key={s} className={`flex-1 h-1 rounded-full transition-colors ${
-                steps.indexOf(step) > steps.indexOf(s) || step === s ? 'bg-[#f5a623]' : 'bg-white/10'
-              }`} />
+      {/* Logo */}
+      <div style={{ textAlign: 'center', marginBottom: 28 }}>
+        <div style={{ fontSize: 48, marginBottom: 8 }}>🛍️</div>
+        <h1 style={{ fontSize: 24, fontWeight: 800, color: 'var(--text)' }}>
+          Lokal<span style={{ color: '#FF4C29' }}>Bazaar</span>
+        </h1>
+        <p style={{ fontSize: 13, color: 'var(--text-sub)', marginTop: 4 }}>Apna ghar, apna bazaar</p>
+      </div>
+
+      <div style={{ width: '100%', maxWidth: 360 }}>
+        {/* Progress */}
+        {isNewFlow && (
+          <div style={{ display: 'flex', gap: 6, marginBottom: 16 }}>
+            {(role === 'seller' ? ['role','details','category','otp'] : ['role','otp']).map(s => (
+              <div key={s} style={{
+                flex: 1, height: 3, borderRadius: 4,
+                background: steps.indexOf(step) >= steps.indexOf(s) ? '#FF4C29' : 'var(--border-md)'
+              }} />
             ))}
           </div>
         )}
 
-        <div className="bg-white/5 border border-white/10 rounded-2xl p-6">
+        <div style={cardStyle}>
 
-          {/* STEP — Email */}
-          {step === 'email' && (
-            <>
-              <h2 className="text-lg font-semibold text-white mb-1">Shuru karo 👋</h2>
-              <p className="text-sm text-white/50 mb-5">Apni email daalo</p>
-              <label className="text-xs text-white/50 mb-1 block">Email Address</label>
-              <input
-                type="email"
-                value={email}
-                onChange={e => setEmail(e.target.value)}
-                onKeyDown={e => e.key === 'Enter' && checkEmail()}
-                placeholder="tumhari@email.com"
-                className="w-full bg-white/10 border border-white/10 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-[#f5a623] transition-colors placeholder:text-white/30 mb-4"
-              />
-              {error && <p className="text-red-400 text-xs mb-3">{error}</p>}
-              <button
-                onClick={checkEmail}
-                disabled={loading || checking}
-                className="w-full bg-[#f5a623] text-white font-semibold py-3 rounded-xl text-sm hover:bg-[#e09520] transition-colors disabled:opacity-50"
-              >
-                {checking ? 'Check kar raha hun...' : loading ? 'Bhej raha hun...' : 'Aage Bado →'}
-              </button>
-            </>
-          )}
+          {/* EMAIL */}
+          {step === 'email' && <>
+            <h2 style={{ fontSize: 17, fontWeight: 700, color: 'var(--text)', marginBottom: 4 }}>Shuru karo 👋</h2>
+            <p style={{ fontSize: 13, color: 'var(--text-sub)', marginBottom: 20 }}>Apni email daalo</p>
+            <label style={label}>Email Address</label>
+            <input style={inp} type="email" value={email}
+              onChange={e => setEmail(e.target.value)}
+              onKeyDown={e => e.key === 'Enter' && checkEmail()}
+              placeholder="tumhari@email.com"
+            />
+            {error && <p style={{ color: '#FF4C29', fontSize: 12, marginTop: 8 }}>{error}</p>}
+            <button style={btnPrimary} onClick={checkEmail} disabled={loading || checking}>
+              {checking ? 'Check kar raha hun...' : loading ? 'Bhej raha hun...' : 'Aage Bado →'}
+            </button>
+          </>}
 
-          {/* STEP — Role */}
-          {step === 'role' && (
-            <>
-              <h2 className="text-lg font-semibold text-white mb-1">Welcome! 🎉</h2>
-              <p className="text-sm text-white/50 mb-6">Pehli baar aa rahe ho — batao tum kaun ho?</p>
-              <div className="grid grid-cols-2 gap-3">
-                <button
-                  onClick={() => selectRole('seller')}
-                  className="flex flex-col items-center gap-3 p-5 bg-white/5 border-2 border-white/10 rounded-2xl hover:border-[#f5a623] hover:bg-[#f5a623]/5 transition-all group"
-                >
-                  <span className="text-3xl">🏪</span>
-                  <div className="text-center">
-                    <div className="text-sm font-semibold text-white group-hover:text-[#f5a623] transition-colors">Seller</div>
-                    <div className="text-xs text-white/40 mt-0.5 leading-tight">Apni dukaan banana chahta hun</div>
-                  </div>
+          {/* ROLE */}
+          {step === 'role' && <>
+            <h2 style={{ fontSize: 17, fontWeight: 700, color: 'var(--text)', marginBottom: 4 }}>Welcome! 🎉</h2>
+            <p style={{ fontSize: 13, color: 'var(--text-sub)', marginBottom: 20 }}>Tum kaun ho?</p>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+              {[{r:'seller',icon:'🏪',label:'Seller',sub:'Dukaan banana chahta hun'},
+                {r:'buyer', icon:'🛒',label:'Buyer', sub:'Products dhundhna chahta hun'}].map(({r,icon,label:lb,sub}) => (
+                <button key={r} onClick={() => selectRole(r)} style={{
+                  background: 'var(--bg-surf)', border: '2px solid var(--border)',
+                  borderRadius: 16, padding: '18px 12px', cursor: 'pointer',
+                  display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8,
+                  fontFamily: 'inherit', transition: 'all 0.2s',
+                }}>
+                  <span style={{ fontSize: 28 }}>{icon}</span>
+                  <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--text)' }}>{lb}</span>
+                  <span style={{ fontSize: 11, color: 'var(--text-sub)', textAlign: 'center', lineHeight: 1.4 }}>{sub}</span>
                 </button>
-                <button
-                  onClick={() => selectRole('buyer')}
-                  disabled={loading}
-                  className="flex flex-col items-center gap-3 p-5 bg-white/5 border-2 border-white/10 rounded-2xl hover:border-[#f5a623] hover:bg-[#f5a623]/5 transition-all group"
-                >
-                  <span className="text-3xl">🛒</span>
-                  <div className="text-center">
-                    <div className="text-sm font-semibold text-white group-hover:text-[#f5a623] transition-colors">Buyer</div>
-                    <div className="text-xs text-white/40 mt-0.5 leading-tight">Products dhundhna chahta hun</div>
-                  </div>
+              ))}
+            </div>
+            {loading && <p style={{ textAlign: 'center', color: 'var(--text-hint)', fontSize: 12, marginTop: 12 }}>OTP bhej raha hun...</p>}
+            <button style={btnBack} onClick={() => setStep('email')}>← Wapas</button>
+          </>}
+
+          {/* BUYER DETAILS */}
+          {step === 'buyer-details' && <>
+            <h2 style={{ fontSize: 17, fontWeight: 700, color: 'var(--text)', marginBottom: 4 }}>Apna parichay do 👋</h2>
+            <p style={{ fontSize: 13, color: 'var(--text-sub)', marginBottom: 20 }}>Thoda basic info chahiye</p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+              {[
+                { k: 'owner_name', lbl: 'Tumhara naam *', ph: 'Full name', t: 'text' },
+                { k: 'phone',      lbl: 'Phone (optional)', ph: '+91 98765 43210', t: 'tel' },
+                { k: 'city',       lbl: 'Sheher', ph: 'Jamnagar', t: 'text' },
+              ].map(({k,lbl,ph,t}) => <div key={k}>
+                <label style={label}>{lbl}</label>
+                <input style={inp} type={t} value={pendingProfile[k]}
+                  onChange={e => upd(k, e.target.value)} placeholder={ph} />
+              </div>)}
+            </div>
+            {error && <p style={{ color: '#FF4C29', fontSize: 12, marginTop: 8 }}>{error}</p>}
+            <button style={btnPrimary} disabled={loading} onClick={() => {
+              if (!pendingProfile.owner_name) { setError('Apna naam daalo'); return }
+              setError(''); sendOTP('buyer')
+            }}>
+              {loading ? 'OTP bhej raha hun...' : 'OTP Bhejo →'}
+            </button>
+            <button style={btnBack} onClick={() => setStep('role')}>← Wapas</button>
+          </>}
+
+          {/* SELLER DETAILS */}
+          {step === 'details' && <>
+            <h2 style={{ fontSize: 17, fontWeight: 700, color: 'var(--text)', marginBottom: 4 }}>Dukaan ki details 🛍️</h2>
+            <p style={{ fontSize: 13, color: 'var(--text-sub)', marginBottom: 20 }}>Thoda basic info chahiye</p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+              {[
+                { k: 'owner_name', lbl: 'Tumhara naam *',    ph: 'Full name' },
+                { k: 'shop_name',  lbl: 'Dukaan ka naam *',  ph: 'Radha Sarees, Kiran Sweets...' },
+                { k: 'city',       lbl: 'Sheher',            ph: 'Jamnagar' },
+              ].map(({k,lbl,ph}) => <div key={k}>
+                <label style={label}>{lbl}</label>
+                <input style={inp} value={pendingProfile[k]}
+                  onChange={e => upd(k, e.target.value)} placeholder={ph} />
+              </div>)}
+              <div>
+                <label style={label}>Bio (optional)</label>
+                <textarea style={{ ...inp, resize: 'none' }} rows={2}
+                  value={pendingProfile.bio}
+                  onChange={e => upd('bio', e.target.value)}
+                  placeholder="Apni dukaan ke baare mein..." />
+              </div>
+            </div>
+            {error && <p style={{ color: '#FF4C29', fontSize: 12, marginTop: 8 }}>{error}</p>}
+            <button style={btnPrimary} onClick={goToCategory}>Aage →</button>
+            <button style={btnBack} onClick={() => setStep('role')}>← Wapas</button>
+          </>}
+
+          {/* CATEGORY */}
+          {step === 'category' && <>
+            <h2 style={{ fontSize: 17, fontWeight: 700, color: 'var(--text)', marginBottom: 4 }}>Kya bechte ho? 🤔</h2>
+            <p style={{ fontSize: 13, color: 'var(--text-sub)', marginBottom: 16 }}>Ek category chuno</p>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 12 }}>
+              {CATEGORIES.map(cat => (
+                <button key={cat.id} onClick={() => selectCategory(cat.id)} disabled={loading}
+                  style={{
+                    background: 'var(--bg-surf)', border: '1px solid var(--border)',
+                    borderRadius: 12, padding: '12px 8px', cursor: 'pointer',
+                    display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5,
+                    fontFamily: 'inherit', opacity: loading ? 0.5 : 1,
+                  }}>
+                  <span style={{ fontSize: 22 }}>{cat.emoji}</span>
+                  <span style={{ fontSize: 10, color: 'var(--text-sub)', textAlign: 'center', lineHeight: 1.3 }}>{cat.label}</span>
                 </button>
-              </div>
-              {loading && <p className="text-center text-white/40 text-xs mt-4">OTP bhej raha hun...</p>}
-              <button onClick={() => setStep('email')} className="w-full text-center text-xs text-white/30 mt-4 hover:text-white/50 transition-colors">← Wapas</button>
-            </>
-          )}
+              ))}
+            </div>
+            {loading && <p style={{ textAlign: 'center', color: 'var(--text-hint)', fontSize: 12 }}>OTP bhej raha hun...</p>}
+            <button style={btnBack} onClick={() => setStep('details')}>← Wapas</button>
+          </>}
 
-          {/* STEP — Seller Details */}
-          {step === 'details' && (
-            <>
-              <h2 className="text-lg font-semibold text-white mb-1">Dukaan ki details 🛍️</h2>
-              <p className="text-sm text-white/50 mb-5">Thoda basic info chahiye</p>
-              <div className="space-y-3">
-                <div>
-                  <label className="text-xs text-white/50 mb-1 block">Tumhara naam *</label>
-                  <input
-                    value={pendingProfile.owner_name}
-                    onChange={e => updateProfile('owner_name', e.target.value)}
-                    placeholder="Full name"
-                    className="w-full bg-white/10 border border-white/10 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-[#f5a623] transition-colors placeholder:text-white/30"
-                  />
-                </div>
-                <div>
-                  <label className="text-xs text-white/50 mb-1 block">Dukaan ka naam *</label>
-                  <input
-                    value={pendingProfile.shop_name}
-                    onChange={e => updateProfile('shop_name', e.target.value)}
-                    placeholder="Radha Sarees, Kiran Sweets..."
-                    className="w-full bg-white/10 border border-white/10 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-[#f5a623] transition-colors placeholder:text-white/30"
-                  />
-                </div>
-                <div>
-                  <label className="text-xs text-white/50 mb-1 block">Sheher</label>
-                  <input
-                    value={pendingProfile.city}
-                    onChange={e => updateProfile('city', e.target.value)}
-                    placeholder="Jamnagar"
-                    className="w-full bg-white/10 border border-white/10 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-[#f5a623] transition-colors placeholder:text-white/30"
-                  />
-                </div>
-                <div>
-                  <label className="text-xs text-white/50 mb-1 block">Bio (optional)</label>
-                  <textarea
-                    value={pendingProfile.bio}
-                    onChange={e => updateProfile('bio', e.target.value)}
-                    placeholder="Apni dukaan ke baare mein..."
-                    rows={2}
-                    className="w-full bg-white/10 border border-white/10 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-[#f5a623] transition-colors placeholder:text-white/30 resize-none"
-                  />
-                </div>
-              </div>
-              {error && <p className="text-red-400 text-xs mt-2">{error}</p>}
-              <button onClick={goToCategory} className="w-full bg-[#f5a623] text-white font-semibold py-3 rounded-xl text-sm mt-4 hover:bg-[#e09520] transition-colors">
-                Aage →
-              </button>
-              <button onClick={() => setStep('role')} className="w-full text-center text-xs text-white/30 mt-3 hover:text-white/50 transition-colors">← Wapas</button>
-            </>
-          )}
+          {/* OTP */}
+          {step === 'otp' && <>
+            <button style={btnBack} onClick={() => setStep(role === 'buyer' ? 'buyer-details' : role ? 'category' : 'email')}>← Wapas</button>
+            <h2 style={{ fontSize: 17, fontWeight: 700, color: 'var(--text)', marginBottom: 4 }}>
+              {role ? 'Almost ho gaya! 🎉' : 'Wapas aaye! 👋'}
+            </h2>
+            <p style={{ fontSize: 13, color: 'var(--text-sub)', marginBottom: 20 }}>
+              OTP check karo — <span style={{ color: 'var(--text)' }}>{email}</span>
+            </p>
+            <label style={label}>6-digit OTP</label>
+            <input style={{ ...inp, textAlign: 'center', fontSize: 22, letterSpacing: 12, fontWeight: 700 }}
+              type="number" value={otp}
+              onChange={e => setOtp(e.target.value.slice(0, 6))}
+              onKeyDown={e => e.key === 'Enter' && verifyOTP()}
+              placeholder="• • • • • •"
+            />
+            {error && <p style={{ color: '#FF4C29', fontSize: 12, marginTop: 8 }}>{error}</p>}
+            <button style={btnPrimary} onClick={verifyOTP} disabled={loading}>
+              {loading ? 'Verify ho raha hai...' : 'Verify karo →'}
+            </button>
+            <button style={{ ...btnBack, marginTop: 4 }} onClick={() => sendOTP()}>OTP nahi mila? Dobara bhejo</button>
+          </>}
 
-          {/* STEP — Category */}
-          {step === 'category' && (
-            <>
-              <h2 className="text-lg font-semibold text-white mb-1">Kya bechte ho? 🤔</h2>
-              <p className="text-sm text-white/50 mb-4">Ek category chuno</p>
-              <div className="grid grid-cols-2 gap-2 mb-4">
-                {CATEGORIES.map(cat => (
-                  <button
-                    key={cat.id}
-                    onClick={() => selectCategory(cat.id)}
-                    disabled={loading}
-                    className="flex flex-col items-center gap-1.5 p-3 rounded-xl border border-white/10 bg-white/5 hover:border-[#f5a623] hover:bg-[#f5a623]/5 transition-all disabled:opacity-50"
-                  >
-                    <span className="text-2xl">{cat.emoji}</span>
-                    <span className="text-xs font-medium text-white/70 text-center leading-tight">{cat.label}</span>
-                  </button>
-                ))}
-              </div>
-              {loading && <p className="text-center text-white/40 text-xs">OTP bhej raha hun...</p>}
-              <button onClick={() => setStep('details')} className="w-full text-center text-xs text-white/30 mt-2 hover:text-white/50 transition-colors">← Wapas</button>
-            </>
-          )}
-
-          {/* STEP — Buyer Details */}
-          {step === 'buyer-details' && (
-            <>
-              <h2 className="text-lg font-semibold text-white mb-1">Apna parichay do 👋</h2>
-              <p className="text-sm text-white/50 mb-5">Thoda basic info chahiye</p>
-              <div className="space-y-3">
-                <div>
-                  <label className="text-xs text-white/50 mb-1 block">Tumhara naam *</label>
-                  <input
-                    value={pendingProfile.owner_name}
-                    onChange={e => updateProfile('owner_name', e.target.value)}
-                    placeholder="Full name"
-                    className="w-full bg-white/10 border border-white/10 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-[#f5a623] transition-colors placeholder:text-white/30"
-                  />
-                </div>
-                <div>
-                  <label className="text-xs text-white/50 mb-1 block">Phone number (optional)</label>
-                  <input
-                    value={pendingProfile.phone || ''}
-                    onChange={e => updateProfile('phone', e.target.value)}
-                    placeholder="+91 98765 43210"
-                    type="tel"
-                    className="w-full bg-white/10 border border-white/10 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-[#f5a623] transition-colors placeholder:text-white/30"
-                  />
-                </div>
-                <div>
-                  <label className="text-xs text-white/50 mb-1 block">Sheher</label>
-                  <input
-                    value={pendingProfile.city}
-                    onChange={e => updateProfile('city', e.target.value)}
-                    placeholder="Jamnagar"
-                    className="w-full bg-white/10 border border-white/10 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-[#f5a623] transition-colors placeholder:text-white/30"
-                  />
-                </div>
-              </div>
-              {error && <p className="text-red-400 text-xs mt-2">{error}</p>}
-              <button
-                onClick={() => {
-                  if (!pendingProfile.owner_name) { setError('Apna naam daalo'); return }
-                  setError('')
-                  sendOTP('buyer')
-                }}
-                disabled={loading}
-                className="w-full bg-[#f5a623] text-white font-semibold py-3 rounded-xl text-sm mt-4 hover:bg-[#e09520] transition-colors disabled:opacity-50"
-              >
-                {loading ? 'OTP bhej raha hun...' : 'OTP Bhejo →'}
-              </button>
-              <button onClick={() => setStep('role')} className="w-full text-center text-xs text-white/30 mt-3 hover:text-white/50 transition-colors">← Wapas</button>
-            </>
-          )}
-
-          {/* STEP — OTP */}
-          {step === 'otp' && (
-            <>
-              <button onClick={() => setStep(role ? 'category' : 'email')} className="text-white/50 text-xs mb-4 flex items-center gap-1 hover:text-white transition-colors">
-                ← Wapas
-              </button>
-              {role ? (
-                <>
-                  <h2 className="text-lg font-semibold text-white mb-1">Almost ho gaya! 🎉</h2>
-                  <p className="text-sm text-white/50 mb-4">Last step — OTP verify karo</p>
-                </>
-              ) : (
-                <>
-                  <h2 className="text-lg font-semibold text-white mb-1">Wapas aaye! 👋</h2>
-                  <p className="text-sm text-white/50 mb-4">OTP verify karo — seedha home pe jaoge</p>
-                </>
-              )}
-              <label className="text-xs text-white/50 mb-1 block">
-                6-digit OTP — <span className="text-white/60">{email}</span> pe bheja
-              </label>
-              <input
-                type="number"
-                value={otp}
-                onChange={e => setOtp(e.target.value.slice(0, 6))}
-                onKeyDown={e => e.key === 'Enter' && verifyOTP()}
-                placeholder="• • • • • •"
-                className="w-full bg-white/10 border border-white/10 rounded-xl px-4 py-3 text-white text-center text-xl tracking-[0.5em] outline-none focus:border-[#f5a623] transition-colors placeholder:text-white/20 mb-4"
-              />
-              {error && <p className="text-red-400 text-xs mb-3">{error}</p>}
-              <button
-                onClick={verifyOTP}
-                disabled={loading}
-                className="w-full bg-[#f5a623] text-white font-semibold py-3 rounded-xl text-sm hover:bg-[#e09520] transition-colors disabled:opacity-50"
-              >
-                {loading ? 'Verify ho raha hai...' : 'Verify karo →'}
-              </button>
-              <button onClick={() => sendOTP()} className="w-full text-center text-xs text-white/40 mt-3 hover:text-white/60 transition-colors">
-                OTP nahi mila? Dobara bhejo
-              </button>
-            </>
-          )}
         </div>
       </div>
 
-      <p className="text-xs text-white/20 mt-6 text-center">
+      <p style={{ fontSize: 11, color: 'var(--text-hint)', marginTop: 20, textAlign: 'center', lineHeight: 1.8 }}>
         Koi password nahi — sirf OTP ✓<br />Koi payment nahi, koi fraud nahi ✓
       </p>
     </div>

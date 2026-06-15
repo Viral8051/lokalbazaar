@@ -4,80 +4,61 @@ import { useAuth } from '../context/AuthContext'
 import { useNavigate } from 'react-router-dom'
 
 const CATEGORIES = [
-  { id: 'saree', label: 'Saree & Textile', emoji: '🥻' },
-  { id: 'food', label: 'Homemade Food', emoji: '🍱' },
-  { id: 'sweets', label: 'Mithai & Sweets', emoji: '🍬' },
-  { id: 'handicraft', label: 'Handicraft', emoji: '🏺' },
-  { id: 'jewellery', label: 'Jewellery', emoji: '💍' },
-  { id: 'beauty', label: 'Beauty & Skincare', emoji: '🧴' },
-  { id: 'clothing', label: 'Clothing', emoji: '👗' },
-  { id: 'other', label: 'Other', emoji: '🛍️' },
+  { id:'saree',      label:'Saree & Textile',  emoji:'🥻' },
+  { id:'food',       label:'Homemade Food',     emoji:'🍱' },
+  { id:'sweets',     label:'Mithai & Sweets',   emoji:'🍬' },
+  { id:'handicraft', label:'Handicraft',        emoji:'🏺' },
+  { id:'jewellery',  label:'Jewellery',         emoji:'💍' },
+  { id:'beauty',     label:'Beauty & Skincare', emoji:'🧴' },
+  { id:'clothing',   label:'Clothing',          emoji:'👗' },
+  { id:'other',      label:'Other',             emoji:'🛍️' },
 ]
+
+const inp = {
+  width:'100%', background:'var(--bg-input)', border:'1px solid var(--border)',
+  borderRadius:14, padding:'12px 16px', color:'var(--text)',
+  fontSize:14, outline:'none', fontFamily:'inherit',
+}
 
 export default function OnboardingPage() {
   const { user, fetchProfile } = useAuth()
   const navigate = useNavigate()
-  const [step, setStep] = useState(0) // 0=role, 1=details, 2=category(seller only)
-  const [role, setRole] = useState(null) // 'seller' | 'buyer'
+  const [step, setStep]     = useState(0)
+  const [role, setRole]     = useState(null)
   const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
+  const [error, setError]   = useState('')
+  const [form, setForm]     = useState({ shop_name:'', owner_name:'', category:'', city:'Jamnagar', bio:'' })
 
-  const [form, setForm] = useState({
-    shop_name: '',
-    owner_name: '',
-    category: '',
-    city: 'Jamnagar',
-    bio: '',
-  })
+  const upd = (k, v) => setForm(f => ({ ...f, [k]: v }))
 
-  function updateForm(key, val) { setForm(f => ({ ...f, [key]: val })) }
-
-  // Step 0 — Role select
   async function selectRole(r) {
     setRole(r)
     if (r === 'buyer') {
-      // Buyer — seedha save karo, no extra details needed
       setLoading(true)
       const { error } = await supabase.from('profiles').upsert({
-        id: user.id,
-        email: user.email,
-        role: 'buyer',
-        is_seller: false,
-        owner_name: user.email.split('@')[0], // placeholder name
-        plan: 'free',
+        id: user.id, email: user.email, role:'buyer', is_seller:false,
+        owner_name: user.email.split('@')[0], plan:'free',
         created_at: new Date().toISOString(),
       })
       setLoading(false)
       if (error) { setError(error.message); return }
       await fetchProfile(user.id)
       navigate('/home')
-    } else {
-      setStep(1)
-    }
+    } else { setStep(1) }
   }
 
-  // Step 1 — Seller details
   function goToCategory() {
     if (!form.owner_name) { setError('Apna naam daalo'); return }
-    if (!form.shop_name) { setError('Dukaan ka naam daalo'); return }
-    setError('')
-    setStep(2)
+    if (!form.shop_name)  { setError('Dukaan ka naam daalo'); return }
+    setError(''); setStep(2)
   }
 
-  // Step 2 — Category + save
   async function finish() {
     if (!form.category) { setError('Category chuno'); return }
-    setLoading(true)
-    setError('')
+    setLoading(true); setError('')
     const { error } = await supabase.from('profiles').upsert({
-      id: user.id,
-      email: user.email,
-      role: 'seller',
-      is_seller: true,
-      ...form,
-      post_count: 0,
-      follower_count: 0,
-      plan: 'free',
+      id: user.id, email: user.email, role:'seller', is_seller:true,
+      ...form, post_count:0, follower_count:0, plan:'free',
       created_at: new Date().toISOString(),
     })
     setLoading(false)
@@ -87,151 +68,112 @@ export default function OnboardingPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0f0a1e] flex flex-col items-center justify-center px-6 py-10">
-      <div className="w-full max-w-sm">
+    <div style={{ minHeight:'100vh', background:'var(--bg)', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', padding:'24px 20px' }}>
+      <div style={{ textAlign:'center', marginBottom:28 }}>
+        <div style={{ fontSize:48, marginBottom:8 }}>🛍️</div>
+        <h1 style={{ fontSize:24, fontWeight:800, color:'var(--text)' }}>
+          Lokal<span style={{ color:'#FF4C29' }}>Bazaar</span>
+        </h1>
+      </div>
 
-        {/* Step 0 — Role selection */}
+      <div style={{ width:'100%', maxWidth:360 }}>
         {step === 0 && (
           <>
-            <div className="text-center mb-8">
-              <div className="text-4xl mb-3">🛍️</div>
-              <h2 className="text-2xl font-bold text-white mb-1">Welcome to LokalBazaar!</h2>
-              <p className="text-sm text-white/50">Pehle batao — aap kaun hain?</p>
+            <div style={{ textAlign:'center', marginBottom:24 }}>
+              <h2 style={{ fontSize:20, fontWeight:700, color:'var(--text)', marginBottom:6 }}>Welcome! 🎉</h2>
+              <p style={{ fontSize:13, color:'var(--text-sub)' }}>Pehle batao — aap kaun hain?</p>
             </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              {/* Seller */}
-              <button
-                onClick={() => selectRole('seller')}
-                disabled={loading}
-                className="flex flex-col items-center gap-3 p-6 bg-white/5 border-2 border-white/10 rounded-2xl hover:border-[#f5a623] hover:bg-[#f5a623]/5 transition-all group"
-              >
-                <span className="text-4xl">🏪</span>
-                <div className="text-center">
-                  <div className="text-sm font-semibold text-white group-hover:text-[#f5a623] transition-colors">Seller</div>
-                  <div className="text-xs text-white/40 mt-1 leading-tight">Apni dukaan banana chahta hun</div>
-                </div>
-              </button>
-
-              {/* Buyer */}
-              <button
-                onClick={() => selectRole('buyer')}
-                disabled={loading}
-                className="flex flex-col items-center gap-3 p-6 bg-white/5 border-2 border-white/10 rounded-2xl hover:border-[#f5a623] hover:bg-[#f5a623]/5 transition-all group"
-              >
-                <span className="text-4xl">🛒</span>
-                <div className="text-center">
-                  <div className="text-sm font-semibold text-white group-hover:text-[#f5a623] transition-colors">Buyer</div>
-                  <div className="text-xs text-white/40 mt-1 leading-tight">Products dhundhna chahta hun</div>
-                </div>
-              </button>
-            </div>
-
-            {loading && <p className="text-center text-white/40 text-xs mt-4">Setting up...</p>}
-            {error && <p className="text-red-400 text-xs mt-3 text-center">{error}</p>}
-          </>
-        )}
-
-        {/* Step 1 — Seller details */}
-        {step === 1 && (
-          <>
-            {/* Progress */}
-            <div className="flex gap-2 mb-8">
-              <div className="flex-1 h-1 rounded-full bg-[#f5a623]" />
-              <div className="flex-1 h-1 rounded-full bg-white/10" />
-            </div>
-
-            <h2 className="text-xl font-bold text-white mb-1">Apni dukaan banao 🛍️</h2>
-            <p className="text-sm text-white/50 mb-6">Thoda basic info chahiye</p>
-
-            <div className="space-y-4">
-              <div>
-                <label className="text-xs text-white/50 mb-1 block">Tumhara naam *</label>
-                <input
-                  value={form.owner_name}
-                  onChange={e => updateForm('owner_name', e.target.value)}
-                  placeholder="Full name"
-                  className="w-full bg-white/10 border border-white/10 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-[#f5a623] transition-colors placeholder:text-white/30"
-                />
-              </div>
-              <div>
-                <label className="text-xs text-white/50 mb-1 block">Dukaan ka naam *</label>
-                <input
-                  value={form.shop_name}
-                  onChange={e => updateForm('shop_name', e.target.value)}
-                  placeholder="Jaise: Radha Sarees, Kiran Sweets..."
-                  className="w-full bg-white/10 border border-white/10 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-[#f5a623] transition-colors placeholder:text-white/30"
-                />
-              </div>
-              <div>
-                <label className="text-xs text-white/50 mb-1 block">Sheher</label>
-                <input
-                  value={form.city}
-                  onChange={e => updateForm('city', e.target.value)}
-                  placeholder="Jamnagar"
-                  className="w-full bg-white/10 border border-white/10 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-[#f5a623] transition-colors placeholder:text-white/30"
-                />
-              </div>
-              <div>
-                <label className="text-xs text-white/50 mb-1 block">Bio (optional)</label>
-                <textarea
-                  value={form.bio}
-                  onChange={e => updateForm('bio', e.target.value)}
-                  placeholder="Apni dukaan ke baare mein batao..."
-                  rows={3}
-                  className="w-full bg-white/10 border border-white/10 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-[#f5a623] transition-colors placeholder:text-white/30 resize-none"
-                />
-              </div>
-            </div>
-
-            {error && <p className="text-red-400 text-xs mt-3">{error}</p>}
-
-            <button onClick={goToCategory} className="w-full bg-[#f5a623] text-white font-semibold py-3 rounded-xl text-sm mt-6 hover:bg-[#e09520] transition-colors">
-              Aage →
-            </button>
-            <button onClick={() => setStep(0)} className="w-full text-center text-xs text-white/30 mt-3 hover:text-white/50 transition-colors">← Wapas</button>
-          </>
-        )}
-
-        {/* Step 2 — Category */}
-        {step === 2 && (
-          <>
-            {/* Progress */}
-            <div className="flex gap-2 mb-8">
-              <div className="flex-1 h-1 rounded-full bg-[#f5a623]" />
-              <div className="flex-1 h-1 rounded-full bg-[#f5a623]" />
-            </div>
-
-            <h2 className="text-xl font-bold text-white mb-1">Kya bechte ho? 🤔</h2>
-            <p className="text-sm text-white/50 mb-6">Ek category chuno</p>
-
-            <div className="grid grid-cols-2 gap-3 mb-6">
-              {CATEGORIES.map(cat => (
-                <button
-                  key={cat.id}
-                  onClick={() => updateForm('category', cat.id)}
-                  className={`flex flex-col items-center gap-2 p-4 rounded-xl border transition-all ${
-                    form.category === cat.id
-                      ? 'border-[#f5a623] bg-[#f5a623]/10 text-[#f5a623]'
-                      : 'border-white/10 bg-white/5 text-white/70 hover:border-white/30'
-                  }`}
-                >
-                  <span className="text-2xl">{cat.emoji}</span>
-                  <span className="text-xs font-medium text-center leading-tight">{cat.label}</span>
+            <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:12 }}>
+              {[{r:'seller',icon:'🏪',lb:'Seller',sub:'Apni dukaan banana chahta hun'},
+                {r:'buyer', icon:'🛒',lb:'Buyer', sub:'Products dhundhna chahta hun'}].map(({r,icon,lb,sub}) => (
+                <button key={r} onClick={() => selectRole(r)} disabled={loading} style={{
+                  background:'var(--bg-card)', border:'2px solid var(--border)',
+                  borderRadius:16, padding:'20px 12px', cursor:'pointer',
+                  display:'flex', flexDirection:'column', alignItems:'center', gap:8,
+                  fontFamily:'inherit',
+                }}>
+                  <span style={{ fontSize:32 }}>{icon}</span>
+                  <span style={{ fontSize:14, fontWeight:700, color:'var(--text)' }}>{lb}</span>
+                  <span style={{ fontSize:11, color:'var(--text-sub)', textAlign:'center', lineHeight:1.4 }}>{sub}</span>
                 </button>
               ))}
             </div>
+            {loading && <p style={{ textAlign:'center', color:'var(--text-hint)', fontSize:12, marginTop:12 }}>Setting up...</p>}
+            {error && <p style={{ color:'#FF4C29', fontSize:12, marginTop:10, textAlign:'center' }}>{error}</p>}
+          </>
+        )}
 
-            {error && <p className="text-red-400 text-xs mb-3">{error}</p>}
+        {step === 1 && (
+          <>
+            <div style={{ display:'flex', gap:6, marginBottom:24 }}>
+              <div style={{ flex:1, height:3, borderRadius:4, background:'#FF4C29' }} />
+              <div style={{ flex:1, height:3, borderRadius:4, background:'var(--border)' }} />
+            </div>
+            <h2 style={{ fontSize:20, fontWeight:700, color:'var(--text)', marginBottom:4 }}>Apni dukaan banao 🛍️</h2>
+            <p style={{ fontSize:13, color:'var(--text-sub)', marginBottom:20 }}>Thoda basic info chahiye</p>
+            <div style={{ display:'flex', flexDirection:'column', gap:12 }}>
+              {[
+                { k:'owner_name', lbl:'Tumhara naam *',   ph:'Full name' },
+                { k:'shop_name',  lbl:'Dukaan ka naam *', ph:'Radha Sarees, Kiran Sweets...' },
+                { k:'city',       lbl:'Sheher',           ph:'Jamnagar' },
+              ].map(({k,lbl,ph}) => (
+                <div key={k}>
+                  <label style={{ fontSize:12, color:'var(--text-sub)', marginBottom:6, display:'block' }}>{lbl}</label>
+                  <input style={inp} value={form[k]} onChange={e => upd(k, e.target.value)} placeholder={ph} />
+                </div>
+              ))}
+              <div>
+                <label style={{ fontSize:12, color:'var(--text-sub)', marginBottom:6, display:'block' }}>Bio (optional)</label>
+                <textarea style={{ ...inp, resize:'none' }} rows={3}
+                  value={form.bio} onChange={e => upd('bio', e.target.value)}
+                  placeholder="Apni dukaan ke baare mein batao..." />
+              </div>
+            </div>
+            {error && <p style={{ color:'#FF4C29', fontSize:12, marginTop:8 }}>{error}</p>}
+            <button onClick={goToCategory} style={{
+              width:'100%', background:'#FF4C29', color:'white',
+              fontWeight:700, fontSize:14, padding:'13px', border:'none',
+              borderRadius:14, cursor:'pointer', fontFamily:'inherit', marginTop:16,
+            }}>Aage →</button>
+            <button onClick={() => setStep(0)} style={{
+              width:'100%', background:'transparent', color:'var(--text-hint)',
+              fontSize:12, padding:'10px', border:'none', cursor:'pointer', fontFamily:'inherit', marginTop:4,
+            }}>← Wapas</button>
+          </>
+        )}
 
-            <button
-              onClick={finish}
-              disabled={loading || !form.category}
-              className="w-full bg-[#f5a623] text-white font-semibold py-3 rounded-xl text-sm hover:bg-[#e09520] transition-colors disabled:opacity-50"
-            >
-              {loading ? 'Saving...' : 'Dukaan shuru karo! 🚀'}
-            </button>
-            <button onClick={() => setStep(1)} className="w-full text-center text-xs text-white/30 mt-3 hover:text-white/50 transition-colors">← Wapas</button>
+        {step === 2 && (
+          <>
+            <div style={{ display:'flex', gap:6, marginBottom:24 }}>
+              <div style={{ flex:1, height:3, borderRadius:4, background:'#FF4C29' }} />
+              <div style={{ flex:1, height:3, borderRadius:4, background:'#FF4C29' }} />
+            </div>
+            <h2 style={{ fontSize:20, fontWeight:700, color:'var(--text)', marginBottom:4 }}>Kya bechte ho? 🤔</h2>
+            <p style={{ fontSize:13, color:'var(--text-sub)', marginBottom:20 }}>Ek category chuno</p>
+            <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:10, marginBottom:16 }}>
+              {CATEGORIES.map(cat => (
+                <button key={cat.id} onClick={() => upd('category', cat.id)} style={{
+                  background: form.category === cat.id ? 'rgba(255,76,41,0.1)' : 'var(--bg-card)',
+                  border: `2px solid ${form.category === cat.id ? '#FF4C29' : 'var(--border)'}`,
+                  borderRadius:14, padding:'14px 8px', cursor:'pointer',
+                  display:'flex', flexDirection:'column', alignItems:'center', gap:6,
+                  fontFamily:'inherit',
+                }}>
+                  <span style={{ fontSize:24 }}>{cat.emoji}</span>
+                  <span style={{ fontSize:11, color: form.category === cat.id ? '#FF4C29' : 'var(--text-sub)', textAlign:'center', lineHeight:1.3 }}>{cat.label}</span>
+                </button>
+              ))}
+            </div>
+            {error && <p style={{ color:'#FF4C29', fontSize:12, marginBottom:8 }}>{error}</p>}
+            <button onClick={finish} disabled={loading || !form.category} style={{
+              width:'100%', background:'#FF4C29', color:'white',
+              fontWeight:700, fontSize:14, padding:'13px', border:'none',
+              borderRadius:14, cursor:'pointer', fontFamily:'inherit', opacity: (!form.category || loading) ? 0.5 : 1,
+            }}>{loading ? 'Saving...' : 'Dukaan shuru karo! 🚀'}</button>
+            <button onClick={() => setStep(1)} style={{
+              width:'100%', background:'transparent', color:'var(--text-hint)',
+              fontSize:12, padding:'10px', border:'none', cursor:'pointer', fontFamily:'inherit', marginTop:4,
+            }}>← Wapas</button>
           </>
         )}
       </div>
