@@ -2,7 +2,6 @@ import { useState, useRef } from 'react'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../context/AuthContext'
 
-// ── Category + Subcategory + Units data ───────────────────────
 const PRODUCT_CATEGORIES = {
   saree: {
     label: 'Saree & Textile', emoji: '🥻',
@@ -58,7 +57,6 @@ const PRODUCT_CATEGORIES = {
 
 const ALL_UNITS = ['piece', 'kg', 'gram', 'meter', 'ml', 'liter', 'set', 'pair', 'dozen', 'box', 'packet']
 
-// ── Toggle Switch ──────────────────────────────────────────────
 function Toggle({ value, onChange, label, sublabel }) {
   return (
     <div className="flex items-center justify-between py-2">
@@ -77,36 +75,13 @@ function Toggle({ value, onChange, label, sublabel }) {
   )
 }
 
-// ── Select Field ───────────────────────────────────────────────
-function SelectField({ label, value, onChange, options, placeholder }) {
-  return (
-    <div>
-      <label className="text-xs text-white/50 mb-1 block">{label}</label>
-      <select
-        value={value}
-        onChange={e => onChange(e.target.value)}
-        className="w-full bg-white/10 border border-white/10 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-[#f5a623] transition-colors appearance-none"
-        style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23ffffff60' d='M6 8L1 3h10z'/%3E%3C/svg%3E")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 16px center' }}
-      >
-        <option value="" className="bg-[#1a1035]">{placeholder}</option>
-        {options.map(o => (
-          <option key={o} value={o} className="bg-[#1a1035]">{o}</option>
-        ))}
-      </select>
-    </div>
-  )
-}
-
-// ── Main Modal ─────────────────────────────────────────────────
 export default function NewPostModal({ onClose, onPosted }) {
   const { user, profile } = useAuth()
   const fileRef = useRef()
+  const recognitionRef = useRef(null)
 
-  // Image
   const [image, setImage] = useState(null)
   const [imagePreview, setImagePreview] = useState(null)
-
-  // Product fields
   const [productName, setProductName] = useState('')
   const [category, setCategory] = useState('')
   const [subcategory, setSubcategory] = useState('')
@@ -116,9 +91,7 @@ export default function NewPostModal({ onClose, onPosted }) {
   const [minOrder, setMinOrder] = useState('1')
   const [stockAvailable, setStockAvailable] = useState(true)
   const [deliveryAvailable, setDeliveryAvailable] = useState(true)
-
-  // UI
-  const [step, setStep] = useState(1) // 1=photo+basic, 2=details, 3=pricing
+  const [step, setStep] = useState(1)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [listening, setListening] = useState(false)
@@ -137,18 +110,48 @@ export default function NewPostModal({ onClose, onPosted }) {
 
   function startVoice() {
     const SR = window.SpeechRecognition || window.webkitSpeechRecognition
-    if (!SR) return
-    if (listening) return
+    if (!SR) { setError('Voice support nahi hai is browser mein'); return }
+    if (listening) {
+      recognitionRef.current?.stop()
+      setListening(false)
+      return
+    }
+
     try {
-      const r = new SR()
-      r.lang = 'hi-IN'
-      r.interimResults = false
-      r.onstart = () => setListening(true)
-      r.onresult = (e) => setCaption(p => p ? p + ' ' + e.results[0][0].transcript : e.results[0][0].transcript)
-      r.onerror = () => setListening(false)
-      r.onend = () => setListening(false)
-      r.start()
-    } catch { setListening(false) }
+      const recognition = new SR()
+      recognitionRef.current = recognition
+
+      const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent)
+      recognition.lang = isIOS ? 'en-IN' : 'hi-IN'
+      recognition.continuous = false
+      recognition.interimResults = false  // iPhone ke liye false zaroori
+      recognition.maxAlternatives = 1
+
+      recognition.onstart = () => setListening(true)
+
+      recognition.onresult = (e) => {
+        let transcript = ''
+        for (let i = 0; i < e.results.length; i++) {
+          transcript += e.results[i][0].transcript
+        }
+        setCaption(p => p ? p + ' ' + transcript : transcript)
+      }
+
+      recognition.onerror = (e) => {
+        console.log('Voice error:', e.error)
+        setListening(false)
+        if (e.error === 'not-allowed') {
+          setError('Microphone permission do — Settings → Safari → Microphone → Allow')
+        }
+      }
+
+      recognition.onend = () => setListening(false)
+      recognition.start()
+
+    } catch (err) {
+      console.log('Voice exception:', err)
+      setListening(false)
+    }
   }
 
   function goNext() {
@@ -218,7 +221,8 @@ export default function NewPostModal({ onClose, onPosted }) {
         <div className="flex items-center justify-between px-5 pt-5 pb-3 flex-shrink-0">
           <div className="flex items-center gap-3">
             {step > 1 && (
-              <button onClick={() => setStep(s => s - 1)} className="text-white/50 hover:text-white text-lg">←</button>
+              <button onClick={() => { setStep(s => s - 1); setError('') }}
+                className="text-white/50 hover:text-white text-lg">←</button>
             )}
             <div>
               <h2 className="text-base font-semibold text-white">Naya Product</h2>
@@ -246,14 +250,14 @@ export default function NewPostModal({ onClose, onPosted }) {
         {/* Scrollable content */}
         <div className="flex-1 overflow-y-auto px-5 pb-5 space-y-4">
 
-          {/* ── STEP 1: Photo + Basic Info ── */}
+          {/* ── STEP 1: Photo + Basic ── */}
           {step === 1 && (
             <>
               {/* Image picker */}
               <div
                 onClick={() => fileRef.current?.click()}
-                className={`w-full rounded-2xl border-2 border-dashed flex flex-col items-center justify-center cursor-pointer transition-colors overflow-hidden ${
-                  imagePreview ? 'border-transparent h-48' : 'border-white/20 hover:border-[#f5a623]/50 h-48'
+                className={`w-full rounded-2xl border-2 border-dashed flex flex-col items-center justify-center cursor-pointer transition-colors overflow-hidden h-48 ${
+                  imagePreview ? 'border-transparent' : 'border-white/20 hover:border-[#f5a623]/50'
                 }`}
               >
                 {imagePreview ? (
@@ -283,34 +287,15 @@ export default function NewPostModal({ onClose, onPosted }) {
                 />
               </div>
 
-              {/* Category */}
-              <SelectField
-                label="Category *"
-                value={category}
-                onChange={(val) => { setCategory(val); setSubcategory('') }}
-                options={Object.entries(PRODUCT_CATEGORIES).map(([k, v]) => `${v.emoji} ${v.label}|${k}`).map(x => x.split('|')[0])}
-                placeholder="Category chuno"
-              />
-              {/* Fix: category value mapping */}
-              <div className="hidden">
-                <select value={category} onChange={e => { setCategory(e.target.value); setSubcategory('') }}
-                  className="w-full bg-white/10 border border-white/10 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-[#f5a623]">
-                  <option value="">Category chuno *</option>
-                  {Object.entries(PRODUCT_CATEGORIES).map(([key, cat]) => (
-                    <option key={key} value={key} className="bg-[#1a1035]">{cat.emoji} {cat.label}</option>
-                  ))}
-                </select>
-              </div>
-
-              {/* Real category select */}
+              {/* Category grid */}
               <div>
-                <label className="text-xs text-white/50 mb-1 block">Category *</label>
+                <label className="text-xs text-white/50 mb-2 block">Category *</label>
                 <div className="grid grid-cols-2 gap-2">
                   {Object.entries(PRODUCT_CATEGORIES).map(([key, cat]) => (
                     <button
                       key={key}
                       type="button"
-                      onClick={() => { setCategory(key); setSubcategory('') }}
+                      onClick={() => { setCategory(key); setSubcategory(''); setUnit(cat.units[0]) }}
                       className={`flex items-center gap-2 px-3 py-2.5 rounded-xl border text-left transition-all ${
                         category === key
                           ? 'border-[#f5a623] bg-[#f5a623]/10 text-white'
@@ -324,10 +309,10 @@ export default function NewPostModal({ onClose, onPosted }) {
                 </div>
               </div>
 
-              {/* Subcategory */}
+              {/* Subcategory chips */}
               {selectedCat && (
                 <div>
-                  <label className="text-xs text-white/50 mb-1 block">Sub-category</label>
+                  <label className="text-xs text-white/50 mb-2 block">Sub-category</label>
                   <div className="flex flex-wrap gap-2">
                     {selectedCat.subcategories.map(sub => (
                       <button
@@ -349,17 +334,19 @@ export default function NewPostModal({ onClose, onPosted }) {
             </>
           )}
 
-          {/* ── STEP 2: Description ── */}
+          {/* ── STEP 2: Description + Toggles ── */}
           {step === 2 && (
             <>
+              {/* Mini summary */}
               <div className="bg-white/5 rounded-xl p-3 flex items-center gap-3">
-                {imagePreview && <img src={imagePreview} className="w-12 h-12 rounded-lg object-cover" />}
-                <div>
-                  <div className="text-sm font-medium text-white">{productName}</div>
+                {imagePreview && <img src={imagePreview} className="w-12 h-12 rounded-lg object-cover flex-shrink-0" />}
+                <div className="min-w-0">
+                  <div className="text-sm font-medium text-white truncate">{productName}</div>
                   <div className="text-xs text-white/40">{selectedCat?.emoji} {selectedCat?.label}{subcategory ? ` · ${subcategory}` : ''}</div>
                 </div>
               </div>
 
+              {/* Description */}
               <div>
                 <label className="text-xs text-white/50 mb-1 block">Description *</label>
                 <div className="relative">
@@ -380,23 +367,17 @@ export default function NewPostModal({ onClose, onPosted }) {
                     <span className="text-sm">{listening ? '⏺' : '🎙️'}</span>
                   </button>
                 </div>
-                <p className="text-[10px] text-white/30 mt-1">Mic tap karo — Hindi mein bol sakte ho</p>
+                <p className="text-[10px] text-white/30 mt-1">
+                  🎙️ Mic tap karo — {/iPhone|iPad|iPod/i.test(navigator.userAgent) ? 'English' : 'Hindi'} mein bol sakte ho
+                </p>
               </div>
 
-              {/* Stock & Delivery toggles */}
+              {/* Toggles */}
               <div className="bg-white/5 rounded-xl px-4 divide-y divide-white/5">
-                <Toggle
-                  value={stockAvailable}
-                  onChange={setStockAvailable}
-                  label="Stock available hai?"
-                  sublabel="Buyers ko pata chalega"
-                />
-                <Toggle
-                  value={deliveryAvailable}
-                  onChange={setDeliveryAvailable}
-                  label="Delivery available hai?"
-                  sublabel="Ghar pe bhej sakte ho?"
-                />
+                <Toggle value={stockAvailable} onChange={setStockAvailable}
+                  label="Stock available hai?" sublabel="Buyers ko pata chalega" />
+                <Toggle value={deliveryAvailable} onChange={setDeliveryAvailable}
+                  label="Delivery available hai?" sublabel="Ghar pe bhej sakte ho?" />
               </div>
             </>
           )}
@@ -404,15 +385,16 @@ export default function NewPostModal({ onClose, onPosted }) {
           {/* ── STEP 3: Pricing ── */}
           {step === 3 && (
             <>
+              {/* Mini summary */}
               <div className="bg-white/5 rounded-xl p-3 flex items-center gap-3">
-                {imagePreview && <img src={imagePreview} className="w-12 h-12 rounded-lg object-cover" />}
-                <div>
-                  <div className="text-sm font-medium text-white">{productName}</div>
+                {imagePreview && <img src={imagePreview} className="w-12 h-12 rounded-lg object-cover flex-shrink-0" />}
+                <div className="min-w-0">
+                  <div className="text-sm font-medium text-white truncate">{productName}</div>
                   <div className="text-xs text-white/40">{selectedCat?.emoji} {subcategory || selectedCat?.label}</div>
                 </div>
               </div>
 
-              {/* Price */}
+              {/* Price + Unit */}
               <div>
                 <label className="text-xs text-white/50 mb-1 block">Price</label>
                 <div className="flex gap-2">
@@ -423,6 +405,7 @@ export default function NewPostModal({ onClose, onPosted }) {
                       onChange={e => setPrice(e.target.value)}
                       placeholder="500"
                       type="text"
+                      inputMode="numeric"
                       className="w-full bg-white/10 border border-white/10 rounded-xl pl-8 pr-4 py-3 text-white text-sm outline-none focus:border-[#f5a623] transition-colors placeholder:text-white/30"
                     />
                   </div>
@@ -457,32 +440,31 @@ export default function NewPostModal({ onClose, onPosted }) {
                 </div>
               </div>
 
-              {/* Summary */}
+              {/* Summary card */}
               <div className="bg-[#f5a623]/5 border border-[#f5a623]/20 rounded-xl p-4 space-y-2">
                 <div className="text-xs text-[#f5a623] font-medium mb-2">Product Summary</div>
-                <div className="flex justify-between text-xs">
-                  <span className="text-white/40">Naam</span>
-                  <span className="text-white">{productName}</span>
-                </div>
-                <div className="flex justify-between text-xs">
-                  <span className="text-white/40">Category</span>
-                  <span className="text-white">{selectedCat?.emoji} {subcategory || selectedCat?.label}</span>
-                </div>
-                <div className="flex justify-between text-xs">
-                  <span className="text-white/40">Price</span>
-                  <span className="text-white">{price ? `₹${price}/${unit}` : 'Price nahi diya'}</span>
-                </div>
-                <div className="flex justify-between text-xs">
-                  <span className="text-white/40">Min Order</span>
-                  <span className="text-white">{minOrder} {unit}</span>
-                </div>
+                {[
+                  ['Naam', productName],
+                  ['Category', `${selectedCat?.emoji} ${subcategory || selectedCat?.label}`],
+                  ['Price', price ? `₹${price}/${unit}` : 'Price nahi diya'],
+                  ['Min Order', `${minOrder} ${unit}`],
+                ].map(([label, val]) => (
+                  <div key={label} className="flex justify-between text-xs">
+                    <span className="text-white/40">{label}</span>
+                    <span className="text-white">{val}</span>
+                  </div>
+                ))}
                 <div className="flex justify-between text-xs">
                   <span className="text-white/40">Stock</span>
-                  <span className={stockAvailable ? 'text-green-400' : 'text-red-400'}>{stockAvailable ? '✓ Available' : '✗ Out of stock'}</span>
+                  <span className={stockAvailable ? 'text-green-400' : 'text-red-400'}>
+                    {stockAvailable ? '✓ Available' : '✗ Out of stock'}
+                  </span>
                 </div>
                 <div className="flex justify-between text-xs">
                   <span className="text-white/40">Delivery</span>
-                  <span className={deliveryAvailable ? 'text-green-400' : 'text-white/40'}>{deliveryAvailable ? '✓ Available' : '✗ Pickup only'}</span>
+                  <span className={deliveryAvailable ? 'text-green-400' : 'text-white/40'}>
+                    {deliveryAvailable ? '✓ Available' : '✗ Pickup only'}
+                  </span>
                 </div>
               </div>
             </>
@@ -493,7 +475,7 @@ export default function NewPostModal({ onClose, onPosted }) {
           )}
         </div>
 
-        {/* Footer button */}
+        {/* Footer */}
         <div className="px-5 py-4 border-t border-white/10 flex-shrink-0">
           {step < 3 ? (
             <button

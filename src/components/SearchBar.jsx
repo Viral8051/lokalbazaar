@@ -8,7 +8,6 @@ export default function SearchBar({ value, onChange, placeholder = 'Search...' }
     const SR = window.SpeechRecognition || window.webkitSpeechRecognition
     if (!SR) { alert('Voice search support nahi hai is browser mein'); return }
 
-    // Pehle se chal raha hai toh band karo
     if (listening) {
       recognitionRef.current?.stop()
       setListening(false)
@@ -19,9 +18,10 @@ export default function SearchBar({ value, onChange, placeholder = 'Search...' }
       const recognition = new SR()
       recognitionRef.current = recognition
 
-      recognition.lang = 'hi-IN'
+      const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent)
+      recognition.lang = isIOS ? 'en-IN' : 'hi-IN'
       recognition.continuous = false
-      recognition.interimResults = true
+      recognition.interimResults = false  // iPhone ke liye false zaroori
       recognition.maxAlternatives = 1
 
       recognition.onstart = () => {
@@ -30,14 +30,20 @@ export default function SearchBar({ value, onChange, placeholder = 'Search...' }
       }
 
       recognition.onresult = (e) => {
-        const transcript = e.results[0][0].transcript
+        let transcript = ''
+        for (let i = 0; i < e.results.length; i++) {
+          transcript += e.results[i][0].transcript
+        }
         console.log('📝 Transcript:', transcript)
         onChange(transcript)
       }
 
       recognition.onerror = (e) => {
-        console.log('❌ Voice error:', e.error, e.message)
+        console.log('❌ Voice error:', e.error)
         setListening(false)
+        if (e.error === 'not-allowed') {
+          alert('Microphone permission do — Settings → Safari → Microphone → Allow')
+        }
       }
 
       recognition.onend = () => {
@@ -45,7 +51,6 @@ export default function SearchBar({ value, onChange, placeholder = 'Search...' }
         setListening(false)
       }
 
-      // Android pe seedha start — koi async nahi
       recognition.start()
       console.log('✅ recognition.start() called')
 
@@ -61,15 +66,15 @@ export default function SearchBar({ value, onChange, placeholder = 'Search...' }
         <span className="text-sm text-white/40">🔍</span>
         <input
           value={value}
-          onChange={e => {
-            console.log('input onChange:', e, typeof e)
-            onChange(e.target.value)
-          }}
+          onChange={e => onChange(e.target.value)}
           placeholder={placeholder}
           className="flex-1 bg-transparent text-white text-sm outline-none placeholder:text-white/30"
         />
         {value && (
-          <button onClick={() => onChange('')} className="text-white/30 hover:text-white text-xs transition-colors">✕</button>
+          <button
+            onClick={() => onChange('')}
+            className="text-white/30 hover:text-white text-xs transition-colors"
+          >✕</button>
         )}
       </div>
       <button
