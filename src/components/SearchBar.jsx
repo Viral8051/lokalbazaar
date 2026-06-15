@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react'
-import { Mic } from 'lucide-react';
+import { Mic, Search  } from 'lucide-react';
 
 const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent)
 
@@ -45,7 +45,7 @@ export default function SearchBar({ value, onChange, placeholder = 'Search...' }
   return (
     <div className="relative flex gap-2 items-center">
       <div className="flex-1 flex items-center gap-2 bg-white/10 border border-white/10 rounded-full px-3 py-2 focus-within:border-[#f5a623] transition-colors">
-        <span className="text-sm text-white/40">🔍</span>
+        <span className="text-sm text-white/40"><Search size={16} /></span>
         <input
           ref={inputRef}
           value={value}
