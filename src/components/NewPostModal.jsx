@@ -95,7 +95,10 @@ export default function NewPostModal({ onClose, onPosted }) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [listening, setListening] = useState(false)
+  const [showIOSHint, setShowIOSHint] = useState(false)
+  const textareaRef = useRef(null)
 
+  const IS_IOS = /iPhone|iPad|iPod/i.test(navigator.userAgent)
   const canPost = profile?.plan === 'premium' || (profile?.post_count ?? 0) < 10
   const selectedCat = PRODUCT_CATEGORIES[category]
 
@@ -109,6 +112,14 @@ export default function NewPostModal({ onClose, onPosted }) {
   }
 
   function startVoice() {
+    // iOS pe native keyboard mic use karo
+    if (IS_IOS) {
+      textareaRef.current?.focus()
+      setShowIOSHint(true)
+      setTimeout(() => setShowIOSHint(false), 4000)
+      return
+    }
+
     const SR = window.SpeechRecognition || window.webkitSpeechRecognition
     if (!SR) { setError('Voice support nahi hai is browser mein'); return }
     if (listening) {
@@ -120,11 +131,9 @@ export default function NewPostModal({ onClose, onPosted }) {
     try {
       const recognition = new SR()
       recognitionRef.current = recognition
-
-      const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent)
-      recognition.lang = isIOS ? 'en-IN' : 'hi-IN'
+      recognition.lang = 'hi-IN'
       recognition.continuous = false
-      recognition.interimResults = false  // iPhone ke liye false zaroori
+      recognition.interimResults = false
       recognition.maxAlternatives = 1
 
       recognition.onstart = () => setListening(true)
@@ -351,6 +360,7 @@ export default function NewPostModal({ onClose, onPosted }) {
                 <label className="text-xs text-white/50 mb-1 block">Description *</label>
                 <div className="relative">
                   <textarea
+                    ref={textareaRef}
                     value={caption}
                     onChange={e => setCaption(e.target.value)}
                     placeholder="Product ke baare mein detail mein batao — size, color, material, occasion..."
@@ -367,8 +377,18 @@ export default function NewPostModal({ onClose, onPosted }) {
                     <span className="text-sm">{listening ? '⏺' : '🎙️'}</span>
                   </button>
                 </div>
+                {/* iOS animated hint */}
+                {showIOSHint && (
+                  <div className="flex flex-col items-end mt-1">
+                    <div className="flex items-center gap-2 bg-[#1a1035] border border-[#f5a623]/40 rounded-2xl px-3 py-2 shadow-xl self-end">
+                      <span className="text-sm">🎙️</span>
+                      <span className="text-xs text-white/80 whitespace-nowrap">Keyboard pe mic dabao</span>
+                    </div>
+                    <div className="animate-bounce text-[#f5a623] text-xl mt-1 mr-2">↓</div>
+                  </div>
+                )}
                 <p className="text-[10px] text-white/30 mt-1">
-                  🎙️ Mic tap karo — {/iPhone|iPad|iPod/i.test(navigator.userAgent) ? 'English' : 'Hindi'} mein bol sakte ho
+                  {IS_IOS ? '📱 Mic tap karo → keyboard pe 🎙️ dabao' : '🎙️ Mic tap karo — Hindi mein bol sakte ho'}
                 </p>
               </div>
 
