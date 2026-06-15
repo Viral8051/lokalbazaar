@@ -39,22 +39,22 @@ function AccountSwitcherDropdown({ profile, user, onClose }) {
   return (
     <div
       ref={ref}
-      className="absolute top-16 left-4 right-4 z-50 bg-[#1a1030] border border-white/15 rounded-2xl shadow-2xl overflow-hidden"
+      className="absolute top-16 left-4 right-4 z-50 bg-card border border-theme rounded-2xl shadow-2xl overflow-hidden"
     >
       {/* Current account */}
       <div className="px-4 py-3 border-b border-theme">
-        <div className="text-[10px] text-theme/30 uppercase tracking-wider mb-2">Current Account</div>
+        <div className="text-[10px] text-hint uppercase tracking-wider mb-2">Current Account</div>
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-accent/20 border-2 border-accent flex items-center justify-center text-accent font-bold text-sm flex-shrink-0">
+          <div className="w-10 h-10 rounded-full bg-accent-dim border-2 border-accent flex items-center justify-center text-accent font-bold text-sm flex-shrink-0">
             {initials(profile?.role === 'buyer' ? profile?.owner_name : profile?.shop_name)}
           </div>
           <div className="flex-1 min-w-0">
             <div className="text-sm font-semibold text-theme truncate">
               {profile?.role === 'buyer' ? profile?.owner_name : profile?.shop_name}
             </div>
-            <div className="text-[10px] text-theme/40 truncate">{user?.email}</div>
+            <div className="text-[10px] text-hint truncate">{user?.email}</div>
           </div>
-          <div className="text-[10px] bg-accent/20 text-accent px-2 py-0.5 rounded-full capitalize">
+          <div className="text-[10px] bg-accent-dim text-accent px-2 py-0.5 rounded-full capitalize">
             {profile?.role === 'buyer' ? '🛒' : '🏪'} {profile?.role}
           </div>
         </div>
@@ -64,7 +64,7 @@ function AccountSwitcherDropdown({ profile, user, onClose }) {
       {otherAccounts.length > 0 && (
         <div className="border-b border-theme">
           <div className="px-4 pt-3 pb-1">
-            <div className="text-[10px] text-theme/30 uppercase tracking-wider">Saved Accounts</div>
+            <div className="text-[10px] text-hint uppercase tracking-wider">Saved Accounts</div>
           </div>
           {otherAccounts.map(acc => (
             <button
@@ -72,14 +72,14 @@ function AccountSwitcherDropdown({ profile, user, onClose }) {
               onClick={() => handleSwitch(acc.email)}
               className="w-full flex items-center gap-3 px-4 py-3 hover:bg-surf transition-colors"
             >
-              <div className="w-9 h-9 rounded-full bg-input border border-theme flex items-center justify-center text-theme/60 font-bold text-sm flex-shrink-0">
+              <div className="w-9 h-9 rounded-full bg-input border border-theme flex items-center justify-center text-sub font-bold text-sm flex-shrink-0">
                 {initials(acc.name)}
               </div>
               <div className="flex-1 min-w-0 text-left">
-                <div className="text-sm text-theme/80 truncate">{acc.name}</div>
-                <div className="text-[10px] text-theme/40 truncate">{acc.email}</div>
+                <div className="text-sm text-theme truncate">{acc.name}</div>
+                <div className="text-[10px] text-hint truncate">{acc.email}</div>
               </div>
-              <div className="text-[10px] text-theme/30 capitalize">{acc.role === 'buyer' ? '🛒' : '🏪'}</div>
+              <div className="text-[10px] text-hint capitalize">{acc.role === 'buyer' ? '🛒' : '🏪'}</div>
             </button>
           ))}
         </div>
@@ -91,30 +91,30 @@ function AccountSwitcherDropdown({ profile, user, onClose }) {
           onClick={handleAddAccount}
           className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-surf transition-colors text-left"
         >
-          <div className="w-9 h-9 rounded-full border border-dashed border-theme flex items-center justify-center text-theme/40 text-lg">
+          <div className="w-9 h-9 rounded-full border border-dashed border-theme flex items-center justify-center text-hint text-lg">
             +
           </div>
-          <span className="text-sm text-theme/60">Naya account add karo</span>
+          <span className="text-sm text-sub">Naya account add karo</span>
         </button>
 
         <button
           onClick={() => { onClose(); signOut() }}
           className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-surf transition-colors text-left"
         >
-          <div className="w-9 h-9 rounded-full border border-theme flex items-center justify-center text-theme/30 text-sm">
+          <div className="w-9 h-9 rounded-full border border-theme flex items-center justify-center text-hint text-sm">
             ↩
           </div>
-          <span className="text-sm text-theme/40">Logout (account save rahega)</span>
+          <span className="text-sm text-hint">Logout (account save rahega)</span>
         </button>
 
         <button
           onClick={() => { onClose(); signOutAndRemove() }}
           className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-red-500/10 transition-colors text-left"
         >
-          <div className="w-9 h-9 rounded-full border border-red-500/20 flex items-center justify-center text-red-400/60 text-sm">
+          <div className="w-9 h-9 rounded-full border border-red-500/20 flex items-center justify-center text-red-400 opacity-60 text-sm">
             ✕
           </div>
-          <span className="text-sm text-red-400/60">Logout & remove account</span>
+          <span className="text-sm text-red-400 opacity-60">Logout & remove account</span>
         </button>
       </div>
     </div>
@@ -133,10 +133,10 @@ function AvatarWithSwitcher({ profile, user }) {
         onClick={() => setOpen(o => !o)}
         className="flex items-center gap-1.5 group"
       >
-        <div className="w-8 h-8 rounded-full bg-accent/20 border-2 border-accent flex items-center justify-center text-accent font-bold text-xs transition-transform group-active:scale-95">
+        <div className="w-8 h-8 rounded-full bg-accent-dim border-2 border-accent flex items-center justify-center text-accent font-bold text-xs transition-transform group-active:scale-95">
           {initials(displayName)}
         </div>
-        <span className="text-theme/40 text-xs">{open ? '▲' : '▼'}</span>
+        <span className="text-hint text-xs">{open ? '▲' : '▼'}</span>
       </button>
 
       {open && (
@@ -178,7 +178,7 @@ function BuyerProfile({ profile, user, fetchProfile }) {
         <h1 className="text-base font-semibold text-theme">My Profile</h1>
         <button
           onClick={() => setEditing(e => !e)}
-          className="text-xs text-theme/50 hover:text-theme transition-colors"
+          className="text-xs text-sub hover:text-theme transition-colors"
         >
           {editing ? 'Cancel' : '✏️ Edit'}
         </button>
@@ -189,28 +189,28 @@ function BuyerProfile({ profile, user, fetchProfile }) {
           <div className="bg-surf border border-theme rounded-2xl p-5">
 
             <div className="flex flex-col items-center mb-5">
-              <div className="w-20 h-20 rounded-full bg-accent/20 border-2 border-accent flex items-center justify-center text-accent font-bold text-2xl mb-2">
+              <div className="w-20 h-20 rounded-full bg-accent-dim border-2 border-accent flex items-center justify-center text-accent font-bold text-2xl mb-2">
                 {initials(profile?.owner_name)}
               </div>
-              <span className="text-xs text-theme/40 bg-surf px-3 py-1 rounded-full">🛒 Buyer</span>
+              <span className="text-xs text-hint bg-surf px-3 py-1 rounded-full">🛒 Buyer</span>
             </div>
 
             {editing ? (
               <div className="flex flex-col gap-3">
                 <div>
-                  <label className="text-xs text-theme/40 mb-1 block">Naam</label>
+                  <label className="text-xs text-hint mb-1 block">Naam</label>
                   <input value={editForm.owner_name} onChange={e => setEditForm(f => ({ ...f, owner_name: e.target.value }))}
                     placeholder="Tumhara naam"
                     className="w-full bg-input border border-theme rounded-xl px-3 py-2.5 text-theme text-sm outline-none focus:border-accent transition-colors" />
                 </div>
                 <div>
-                  <label className="text-xs text-theme/40 mb-1 block">Phone</label>
+                  <label className="text-xs text-hint mb-1 block">Phone</label>
                   <input value={editForm.phone} onChange={e => setEditForm(f => ({ ...f, phone: e.target.value }))}
                     placeholder="+91 98765 43210" type="tel"
                     className="w-full bg-input border border-theme rounded-xl px-3 py-2.5 text-theme text-sm outline-none focus:border-accent transition-colors" />
                 </div>
                 <div>
-                  <label className="text-xs text-theme/40 mb-1 block">Sheher</label>
+                  <label className="text-xs text-hint mb-1 block">Sheher</label>
                   <input value={editForm.city} onChange={e => setEditForm(f => ({ ...f, city: e.target.value }))}
                     placeholder="Jamnagar"
                     className="w-full bg-input border border-theme rounded-xl px-3 py-2.5 text-theme text-sm outline-none focus:border-accent transition-colors" />
@@ -238,10 +238,10 @@ function BuyerProfile({ profile, user, fetchProfile }) {
 
         {!editing && (
           <div className="px-4 mt-4">
-            <div className="bg-accent/10 border border-accent/20 rounded-2xl p-4 text-center">
+            <div className="bg-accent-dim border border-accent rounded-2xl p-4 text-center">
               <div className="text-2xl mb-1">🛍️</div>
-              <p className="text-sm text-theme/70 font-medium">Kuch dhundh rahe ho?</p>
-              <p className="text-xs text-theme/40 mt-0.5 mb-3">Apne sheher ke sellers explore karo</p>
+              <p className="text-sm text-sub font-medium">Kuch dhundh rahe ho?</p>
+              <p className="text-xs text-hint mt-0.5 mb-3">Apne sheher ke sellers explore karo</p>
               <a href="/explore" className="inline-block bg-accent text-theme text-xs font-semibold px-5 py-2 rounded-xl hover:bg-accent transition-colors">
                 Explore karo →
               </a>
@@ -258,8 +258,8 @@ function InfoRow({ icon, label, value, faded }) {
     <div className="flex items-center gap-3 py-2 border-b border-theme last:border-0">
       <span className="text-base w-6 text-center">{icon}</span>
       <div className="flex-1">
-        <div className="text-[10px] text-theme/30 uppercase tracking-wide">{label}</div>
-        <div className={`text-sm mt-0.5 ${faded ? 'text-theme/30 italic' : 'text-theme'}`}>{value}</div>
+        <div className="text-[10px] text-hint uppercase tracking-wide">{label}</div>
+        <div className={`text-sm mt-0.5 ${faded ? 'text-hint italic' : 'text-theme'}`}>{value}</div>
       </div>
     </div>
   )
@@ -317,10 +317,10 @@ function SellerProfile({ profile, user, fetchProfile }) {
         <AvatarWithSwitcher profile={profile} user={user} />
         <h1 className="text-base font-semibold text-theme">My Profile</h1>
         <div className="flex items-center gap-3">
-          <button onClick={() => setEditing(e => !e)} className="text-xs text-theme/50 hover:text-theme transition-colors">
+          <button onClick={() => setEditing(e => !e)} className="text-xs text-sub hover:text-theme transition-colors">
             {editing ? 'Cancel' : '✏️ Edit'}
           </button>
-          <button onClick={() => navigate('/analytics')} className="text-xs text-theme/50 hover:text-theme transition-colors">
+          <button onClick={() => navigate('/analytics')} className="text-xs text-sub hover:text-theme transition-colors">
             📊
           </button>
         </div>
@@ -330,7 +330,7 @@ function SellerProfile({ profile, user, fetchProfile }) {
         {/* Profile card */}
         <div className="px-4 pt-4 pb-3">
           <div className="flex gap-4 items-start">
-            <div className="w-16 h-16 rounded-full bg-accent/20 border-2 border-accent flex items-center justify-center text-accent font-bold text-xl flex-shrink-0">
+            <div className="w-16 h-16 rounded-full bg-accent-dim border-2 border-accent flex items-center justify-center text-accent font-bold text-xl flex-shrink-0">
               {initials(profile?.shop_name)}
             </div>
             <div className="flex-1">
@@ -354,13 +354,13 @@ function SellerProfile({ profile, user, fetchProfile }) {
                 <>
                   <div className="flex items-center gap-2">
                     <h2 className="text-base font-semibold text-theme">{profile?.shop_name || 'Your Shop'}</h2>
-                    {isPremium && <span className="text-[10px] bg-accent/20 text-accent px-1.5 py-0.5 rounded-full">✦ Pro</span>}
+                    {isPremium && <span className="text-[10px] bg-accent-dim text-accent px-1.5 py-0.5 rounded-full">✦ Pro</span>}
                   </div>
-                  <div className="text-xs text-theme/50 mt-0.5">{profile?.owner_name} · {profile?.city}</div>
-                  {profile?.bio && <p className="text-xs text-theme/60 mt-1 leading-relaxed">{profile.bio}</p>}
+                  <div className="text-xs text-sub mt-0.5">{profile?.owner_name} · {profile?.city}</div>
+                  {profile?.bio && <p className="text-xs text-sub mt-1 leading-relaxed">{profile.bio}</p>}
                   <div className="flex gap-4 mt-2">
-                    <div><span className="text-sm font-semibold text-theme">{profile?.post_count || 0}</span> <span className="text-xs text-theme/40">posts</span></div>
-                    <div><span className="text-sm font-semibold text-theme">{profile?.follower_count || 0}</span> <span className="text-xs text-theme/40">followers</span></div>
+                    <div><span className="text-sm font-semibold text-theme">{profile?.post_count || 0}</span> <span className="text-xs text-hint">posts</span></div>
+                    <div><span className="text-sm font-semibold text-theme">{profile?.follower_count || 0}</span> <span className="text-xs text-hint">followers</span></div>
                   </div>
                 </>
               )}
@@ -370,10 +370,10 @@ function SellerProfile({ profile, user, fetchProfile }) {
 
         {/* Free plan banner */}
         {!isPremium && (
-          <div className="mx-4 mb-4 bg-accent/10 border border-accent/20 rounded-xl p-3">
+          <div className="mx-4 mb-4 bg-accent-dim border border-accent rounded-xl p-3">
             <div className="flex items-center justify-between mb-1">
               <span className="text-xs font-medium text-accent">Free Plan</span>
-              <span className="text-xs text-theme/50">{postsLeft} posts baaki</span>
+              <span className="text-xs text-sub">{postsLeft} posts baaki</span>
             </div>
             <div className="w-full bg-input rounded-full h-1.5 mb-2">
               <div className="bg-accent h-1.5 rounded-full transition-all" style={{ width: `${((10 - postsLeft) / 10) * 100}%` }} />
@@ -386,17 +386,17 @@ function SellerProfile({ profile, user, fetchProfile }) {
 
         <div className="px-4 mb-4">
           <button onClick={() => setShowNewPost(true)} disabled={!isPremium && postsLeft <= 0}
-            className="w-full border border-dashed border-accent/40 text-accent rounded-xl py-3 text-sm flex items-center justify-center gap-2 hover:border-accent hover:bg-accent/5 transition-colors disabled:opacity-30 disabled:cursor-not-allowed">
+            className="w-full border border-dashed border-accent text-accent rounded-xl py-3 text-sm flex items-center justify-center gap-2 hover:border-accent hover:bg-accent-dim transition-colors disabled:opacity-30 disabled:cursor-not-allowed">
             + Naya product add karo
           </button>
         </div>
 
         <div className="px-4">
-          <div className="text-xs text-theme/40 uppercase tracking-wider mb-3">Mere Posts ({posts.length})</div>
+          <div className="text-xs text-hint uppercase tracking-wider mb-3">Mere Posts ({posts.length})</div>
           {loading ? (
             <div className="flex flex-col gap-3">{[1,2].map(i => <div key={i} className="h-64 bg-surf rounded-2xl animate-pulse" />)}</div>
           ) : posts.length === 0 ? (
-            <div className="text-center py-12 text-theme/30">
+            <div className="text-center py-12 text-hint">
               <div className="text-3xl mb-2">📸</div>
               <div className="text-sm">Abhi koi post nahi</div>
               <div className="text-xs mt-1">Pehla product add karo!</div>
