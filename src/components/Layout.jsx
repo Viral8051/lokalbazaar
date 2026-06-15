@@ -13,25 +13,52 @@ export default function Layout({ children, active }) {
   ]
 
   return (
-    <div className="flex flex-col h-screen overflow-hidden" style={{ background: 'var(--bg)' }}>
-      <div className="flex-1 overflow-hidden flex flex-col">
+    <div style={{
+      display: 'flex',
+      flexDirection: 'column',
+      height: '100dvh',         /* dynamic viewport height — mobile safe */
+      overflow: 'hidden',
+      background: 'var(--bg)',
+      maxWidth: 480,            /* mobile-first max width */
+      margin: '0 auto',
+      position: 'relative',
+    }}>
+      {/* Page content */}
+      <div style={{ flex: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column', minHeight: 0 }}>
         {children}
       </div>
-      <div
-        className="flex flex-shrink-0 border-t pb-safe"
-        style={{ background: 'var(--bg-card)', borderColor: 'var(--border)' }}
-      >
+
+      {/* Bottom nav */}
+      <div style={{
+        display: 'flex',
+        flexShrink: 0,
+        background: 'var(--bg-card)',
+        borderTop: '1px solid var(--border)',
+        paddingBottom: 'env(safe-area-inset-bottom, 0px)',
+      }}>
         {tabs.map(tab => (
           <button
             key={tab.id}
             onClick={() => navigate(tab.path)}
-            className="flex-1 flex flex-col items-center gap-1 py-2.5 transition-all"
-            style={{ color: cur === tab.id ? '#FF4C29' : 'var(--text-hint)' }}
+            style={{
+              flex: 1,
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              gap: 3,
+              padding: '10px 4px 8px',
+              background: 'transparent',
+              border: 'none',
+              cursor: 'pointer',
+              color: cur === tab.id ? '#FF4C29' : 'var(--text-hint)',
+              transition: 'color 0.2s',
+              fontFamily: 'inherit',
+            }}
           >
-            <span className="text-xl leading-none">{tab.icon}</span>
-            <span className="text-[10px] font-medium">{tab.label}</span>
+            <span style={{ fontSize: 20, lineHeight: 1 }}>{tab.icon}</span>
+            <span style={{ fontSize: 10, fontWeight: 600 }}>{tab.label}</span>
             {cur === tab.id && (
-              <div className="w-1 h-1 rounded-full" style={{ background: '#FF4C29' }} />
+              <div style={{ width: 4, height: 4, borderRadius: '50%', background: '#FF4C29' }} />
             )}
           </button>
         ))}
