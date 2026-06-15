@@ -61,7 +61,7 @@ export default function SearchBar({ value, onChange, placeholder = 'Search...' }
       {/* Mic button */}
       <button
         onClick={startVoice}
-        className={`w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 transition-all ${
+        className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 transition-all ${
           listening
             ? 'bg-red-500 scale-110 shadow-lg shadow-red-500/40'
             : 'bg-[#f5a623] hover:bg-[#e09520]'
