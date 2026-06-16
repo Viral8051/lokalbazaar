@@ -307,11 +307,12 @@ export default function NewPostModal({ onClose, onPosted }) {
                       key={key}
                       type="button"
                       onClick={() => { setCategory(key); setSubcategory(''); setUnit(cat.units[0]) }}
-                      className={`flex items-center gap-2 px-3 py-2.5 rounded-xl border text-left transition-all ${
+                      className={`flex items-center gap-2 rounded-xl border text-left transition-all ${
                         category === key
                           ? 'border-[#f5a623] bg-[#f5a623]/10 text-white'
                           : 'border-white/10 bg-white/5 text-white/60 hover:border-white/30'
                       }`}
+                      style={{padding:'4px 8px'}}
                     >
                       <span className="text-lg">{cat.emoji}</span>
                       <span className="text-xs font-medium leading-tight">{cat.label}</span>
@@ -498,7 +499,7 @@ export default function NewPostModal({ onClose, onPosted }) {
         </div>
 
         {/* Footer */}
-        <div className="px-5 py-4 border-t border-white/10 flex-shrink-0">
+        <div className="border-t border-white/10 flex-shrink-0" style={{padding:'12px 16px'}}>
           {step < 3 ? (
             <button
               onClick={goNext}
