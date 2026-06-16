@@ -397,7 +397,7 @@ function SellerProfile({ profile, user, fetchProfile }) {
           </div>
         )}
 
-        <div className="px-4 mb-4">
+        <div className="" style={{margin:'12px 16px'}}>
           <button onClick={() => setShowNewPost(true)} disabled={!isPremium && postsLeft <= 0}
             className="w-full border border-dashed border-accent text-accent rounded-xl py-3 text-sm flex items-center justify-center gap-2 hover:border-accent hover:bg-accent-dim transition-colors disabled:opacity-30 disabled:cursor-not-allowed">
             + Naya product add karo
