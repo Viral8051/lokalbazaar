@@ -85,7 +85,7 @@ export default function HomePage() {
       <div style={{ flex: 1, overflowY: 'auto', overflowX: 'hidden' }} className="scrollbar-hide">
 
         {/* Stories */}
-        <div style={{ borderBottom: '1px solid var(--border)' }}>
+        <div style={{ borderBottom: '1px solid var(--border)', padding:'12px 16px' }}>
           <Stories />
         </div>
 
