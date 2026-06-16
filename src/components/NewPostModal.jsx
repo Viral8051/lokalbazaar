@@ -268,6 +268,7 @@ export default function NewPostModal({ onClose, onPosted }) {
                 className={`w-full rounded-2xl border-2 border-dashed flex flex-col items-center justify-center cursor-pointer transition-colors overflow-hidden h-48 ${
                   imagePreview ? 'border-transparent' : 'border-white/20 hover:border-[#f5a623]/50'
                 }`}
+                style={{margin:'0 0 12px'}}
               >
                 {imagePreview ? (
                   <img src={imagePreview} alt="Product" className="w-full h-full object-cover" />
@@ -286,8 +287,8 @@ export default function NewPostModal({ onClose, onPosted }) {
               )}
 
               {/* Product name */}
-              <div>
-                <label className="text-xs text-white/50 mb-1 block">Product ka naam *</label>
+              <div style={{margin :'0 0 12px'}}>
+                <label className="text-xs text-white/50 block" style={{margin: '0 0 12px'}}>Product ka naam *</label>
                 <input
                   value={productName}
                   onChange={e => setProductName(e.target.value)}
@@ -297,8 +298,8 @@ export default function NewPostModal({ onClose, onPosted }) {
               </div>
 
               {/* Category grid */}
-              <div>
-                <label className="text-xs text-white/50 mb-2 block">Category *</label>
+              <div style={{margin :'0 0 12px'}}>
+                <label className="text-xs text-white/50 block" style={{margin :'0 0 12px'}}>Category *</label>
                 <div className="grid grid-cols-2 gap-2">
                   {Object.entries(PRODUCT_CATEGORIES).map(([key, cat]) => (
                     <button
@@ -500,7 +501,8 @@ export default function NewPostModal({ onClose, onPosted }) {
           {step < 3 ? (
             <button
               onClick={goNext}
-              className="w-full bg-[#f5a623] text-white font-semibold py-3 rounded-xl text-sm hover:bg-[#e09520] transition-colors"
+              className="w-full bg-[#f5a623] text-white font-semibold rounded-xl text-sm hover:bg-[#e09520] transition-colors"
+              style={{padding:'4px 8px'}}
             >
               Aage → (Step {step + 1} of 3)
             </button>
@@ -508,7 +510,8 @@ export default function NewPostModal({ onClose, onPosted }) {
             <button
               onClick={handlePost}
               disabled={loading || !canPost}
-              className="w-full bg-[#f5a623] text-white font-semibold py-3 rounded-xl text-sm hover:bg-[#e09520] transition-colors disabled:opacity-50"
+              className="w-full bg-[#f5a623] text-white font-semibold rounded-xl text-sm hover:bg-[#e09520] transition-colors disabled:opacity-50"
+              style={{padding:'4px 8px'}}
             >
               {loading ? 'Post ho raha hai...' : '🚀 Product Post Karo!'}
             </button>
