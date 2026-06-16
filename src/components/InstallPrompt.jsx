@@ -45,7 +45,7 @@ export default function InstallPrompt() {
   if (installed || !shown || !prompt) return null
 
   return (
-    <div className="fixed bottom-24 left-4 right-4 md:left-auto md:right-6 md:w-80 bg-[#1a1035] border border-[#f5a623]/30 rounded-2xl p-4 z-50 shadow-xl">
+    <div className="fixed bottom-24 left-4 right-4 md:left-auto md:right-6 md:w-80 bg-[#1a1035] border border-[#f5a623]/30 rounded-2xl z-50 shadow-xl" style={{padding:'12px 16px'}}>
       <div className="flex items-start gap-3">
         <img src="/icon-192.png" alt="LokalBazaar" className="w-12 h-12 rounded-xl flex-shrink-0" />
         <div className="flex-1">
