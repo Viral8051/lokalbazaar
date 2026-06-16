@@ -383,7 +383,7 @@ function SellerProfile({ profile, user, fetchProfile }) {
 
         {/* Free plan banner */}
         {!isPremium && (
-          <div className="mx-4 mb-4 bg-accent-dim border border-accent rounded-xl p-3">
+          <div className="bg-accent-dim border border-accent rounded-xl" style={{padding:'12px 16px'}}>
             <div className="flex items-center justify-between mb-1">
               <span className="text-xs font-medium text-accent">Free Plan</span>
               <span className="text-xs text-sub">{postsLeft} posts baaki</span>
