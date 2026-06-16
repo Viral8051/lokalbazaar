@@ -404,7 +404,7 @@ function SellerProfile({ profile, user, fetchProfile }) {
           </button>
         </div>
 
-        <div className="px-4">
+        <div className="" style={{padding: '12px 16px'}}>
           <div className="text-xs text-hint uppercase tracking-wider mb-3">Mere Posts ({posts.length})</div>
           {loading ? (
             <div className="flex flex-col gap-3" style={{padding: '12px 16px'}}>{[1,2].map(i => <div key={i} className="h-64 bg-surf rounded-2xl animate-pulse" />)}</div>
