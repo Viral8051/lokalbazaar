@@ -188,7 +188,7 @@ function BuyerProfile({ profile, user, fetchProfile }) {
         <div className="px-4 pt-6">
           <div className="bg-surf border border-theme rounded-2xl p-5" style={{margin:'12px 16px'}}>
 
-            <div className="flex flex-col items-center " style={{margin:'0 0 12px 0'}}>
+            <div className="flex flex-col items-center " style={{margin:'0 0 12px 0',padding:'12px 0'}}>
               <div className="w-20 h-20 rounded-full bg-accent-dim border-2 border-accent flex items-center justify-center text-accent font-bold text-2xl mb-2">
                 {initials(profile?.owner_name)}
               </div>
