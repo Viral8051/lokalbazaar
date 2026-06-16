@@ -173,7 +173,7 @@ function BuyerProfile({ profile, user, fetchProfile }) {
   return (
     <Layout active="profile">
       {/* Header */}
-      <div className="flex items-center justify-between px-4 py-3 border-b border-theme sticky top-0 bg-theme z-10">
+      <div className="flex items-center justify-between border-b border-theme sticky top-0 bg-theme z-10" style={{padding:'12px 16px'}}>
         <AvatarWithSwitcher profile={profile} user={user} />
         <h1 className="text-base font-semibold text-theme">My Profile</h1>
         <button
@@ -188,7 +188,7 @@ function BuyerProfile({ profile, user, fetchProfile }) {
         <div className="px-4 pt-6">
           <div className="bg-surf border border-theme rounded-2xl p-5">
 
-            <div className="flex flex-col items-center mb-5">
+            <div className="flex flex-col items-center " style={{margin:'0 0 12px 0'}}>
               <div className="w-20 h-20 rounded-full bg-accent-dim border-2 border-accent flex items-center justify-center text-accent font-bold text-2xl mb-2">
                 {initials(profile?.owner_name)}
               </div>
@@ -196,7 +196,7 @@ function BuyerProfile({ profile, user, fetchProfile }) {
             </div>
 
             {editing ? (
-              <div className="flex flex-col gap-3">
+              <div className="flex flex-col gap-3" style={{padding: '12px 16px'}}>
                 <div>
                   <label className="text-xs text-hint mb-1 block">Naam</label>
                   <input value={editForm.owner_name} onChange={e => setEditForm(f => ({ ...f, owner_name: e.target.value }))}
