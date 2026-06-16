@@ -86,18 +86,18 @@ export default function AnalyticsPage() {
       </div>
 
       <div className="flex-1 overflow-y-auto scrollbar-hide" style={{padding:'12px 16px'}}>
-        <div className="flex gap-2 px-4 py-3">
+        <div className="flex gap-2" style={{margin:'0 0 12px'}}>
           {[{ id:'week', label:'Is hafte' }, { id:'month', label:'Is mahine' }, { id:'all', label:'Sab time' }].map(p => (
             <button key={p.id} onClick={() => setPeriod(p.id)}
-              className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors border ${
+              className={` rounded-full text-xs font-medium transition-colors border ${
                 period === p.id ? 'bg-accent border-accent text-white' : 'border-theme text-sub hover:border-theme-md'
-              }`}>
+              }`} style={{padding:'4px 8px'}}>
               {p.label}
             </button>
           ))}
         </div>
 
-        <div className="px-4 mb-4">
+        <div className="" style={{margin:'0 0 12px'}}>
           <div className="text-xs text-hint uppercase tracking-wider mb-3">Overview</div>
           <div className="grid grid-cols-2 gap-3">
             <StatCard emoji="📸" label="Total Posts"  value={analytics?.total_posts    || 0} sub="Published products" />
@@ -107,7 +107,7 @@ export default function AnalyticsPage() {
           </div>
         </div>
 
-        <div className="px-4 mb-4">
+        <div className="" style={{margin:'0 0 12px'}}>
           <div className="text-xs text-hint uppercase tracking-wider mb-3">Engagement</div>
           <div className="bg-surf border border-theme rounded-2xl p-4">
             <div className="flex items-center justify-between mb-3">
@@ -139,7 +139,7 @@ export default function AnalyticsPage() {
         </div>
 
         {topPost && (
-          <div className="px-4 mb-4">
+          <div className="" style={{margin:'0 0 12px'}}>
             <div className="text-xs text-hint uppercase tracking-wider mb-3">Top Post 🏆</div>
             <div className="bg-accent-dim border border-accent rounded-2xl p-3 flex items-center gap-3" style={{ borderColor:'rgba(255,76,41,0.2)' }}>
               {topPost.image_url
@@ -158,7 +158,7 @@ export default function AnalyticsPage() {
           </div>
         )}
 
-        <div className="px-4 mb-4">
+        <div className="" style={{margin:'0 0 12px'}}>
           <div className="text-xs text-hint uppercase tracking-wider mb-3">💡 Tips</div>
           <div className="flex flex-col gap-2">
             {[
