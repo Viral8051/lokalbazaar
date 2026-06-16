@@ -420,7 +420,7 @@ function SellerProfile({ profile, user, fetchProfile }) {
                 <div key={post.id} className="relative">
                   <PostCard post={post} onSellerClick={() => {}} />
                   <button onClick={() => deletePost(post.id)}
-                    className="absolute top-3 right-3 bg-red-500/80 hover:bg-red-500 text-theme text-xs px-2 py-1 rounded-lg transition-colors">
+                    className="absolute top-3 right-3 bg-red-500/80 hover:bg-red-500 text-theme text-xs rounded-lg transition-colors" style={{padding:'4px 8px'}}>
                     Delete
                   </button>
                 </div>
