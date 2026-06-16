@@ -450,7 +450,7 @@ export default function NewPostModal({ onClose, onPosted }) {
 
               {/* Min order */}
               <div style={{margin:'0 0 12px'}}>
-                <label className="text-xs text-white/50 mb-1 block">Minimum order</label>
+                <label className="text-xs text-white/50 block" style={{margin:'0 0 12px'}}>Minimum order</label>
                 <div className="flex items-center gap-3 bg-white/10 border border-white/10 rounded-xl" style={{padding:'12px 16px'}}>
                   <button
                     type="button"
@@ -480,7 +480,7 @@ export default function NewPostModal({ onClose, onPosted }) {
                     <span className="text-white">{val}</span>
                   </div>
                 ))}
-                <div className="flex justify-between text-xs">
+                <div className="flex justify-between text-xs" style={{margin:'0 0 12px'}}>
                   <span className="text-white/40">Stock</span>
                   <span className={stockAvailable ? 'text-green-400' : 'text-red-400'}>
                     {stockAvailable ? '✓ Available' : '✗ Out of stock'}
