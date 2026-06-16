@@ -79,7 +79,7 @@ export default function AnalyticsPage() {
         <button onClick={() => navigate(-1)} className="text-sub hover:text-theme text-xl">←</button>
         <h1 className="text-base font-semibold text-theme flex-1">Analytics</h1>
         {profile?.plan !== 'premium' && (
-          <button onClick={() => navigate('/premium')} className="text-xs bg-accent-dim text-accent px-3 py-1 rounded-full">
+          <button onClick={() => navigate('/premium')} className="text-xs bg-accent-dim text-accent rounded-full" style={{padding:'4px 8px'}}>
             ✦ Premium
           </button>
         )}
