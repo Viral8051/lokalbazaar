@@ -42,7 +42,7 @@ function AccountSwitcherDropdown({ profile, user, onClose }) {
       className="absolute top-16 left-4 right-4 z-50 bg-card border border-theme rounded-2xl shadow-2xl overflow-hidden"
     >
       {/* Current account */}
-      <div className="px-4 py-3 border-b border-theme">
+      <div className=" border-b border-theme" style={{padding:'12px 16px'}}>
         <div className="text-[10px] text-hint uppercase tracking-wider mb-2">Current Account</div>
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-full bg-accent-dim border-2 border-accent flex items-center justify-center text-accent font-bold text-sm flex-shrink-0">
