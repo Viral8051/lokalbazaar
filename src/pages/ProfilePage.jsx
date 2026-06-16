@@ -101,6 +101,7 @@ function AccountSwitcherDropdown({ profile, user, onClose }) {
         <button
           onClick={handleAddAccount}
           className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-surf transition-colors text-left"
+          style={{margin:'0 0 12px'}}
         >
           <div className="w-9 h-9 rounded-full border border-dashed border-theme flex items-center justify-center text-hint text-lg">
             +
@@ -111,6 +112,7 @@ function AccountSwitcherDropdown({ profile, user, onClose }) {
         <button
           onClick={() => { onClose(); signOut() }}
           className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-surf transition-colors text-left"
+          style={{margin:'0 0 12px'}}
         >
           <div className="w-9 h-9 rounded-full border border-theme flex items-center justify-center text-hint text-sm">
             ↩
