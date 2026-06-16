@@ -23,7 +23,7 @@ function PostRow({ post }) {
     return `${Math.floor(diff/86400)}d ago`
   }
   return (
-    <div className="flex items-center gap-3 py-3 border-b border-theme last:border-0">
+    <div className="flex items-center gap-3 border-b border-theme last:border-0" style={{padding: '12px 16px'}}>
       {post.image_url
         ? <img src={post.image_url} alt="" className="w-12 h-12 rounded-xl object-cover flex-shrink-0" />
         : <div className="w-12 h-12 rounded-xl bg-surf flex items-center justify-center text-xl flex-shrink-0">🛍️</div>
