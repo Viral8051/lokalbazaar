@@ -359,7 +359,7 @@ function SellerProfile({ profile, user, fetchProfile }) {
                     placeholder="Apne baare mein..." rows={2}
                     className="bg-input border border-theme rounded-lg text-theme text-sm outline-none focus:border-accent transition-colors resize-none" style={{padding:'4px 8px'}}/>
                   <button onClick={saveProfile} disabled={saving}
-                    className="bg-accent text-theme text-xs font-medium py-2 rounded-lg hover:bg-accent transition-colors disabled:opacity-50">
+                    className="bg-accent text-theme text-xs font-medium rounded-lg hover:bg-accent transition-colors disabled:opacity-50" style={{padding:'4px 8px'}}>
                     {saving ? 'Saving...' : 'Save karo'}
                   </button>
                 </div>
