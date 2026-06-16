@@ -109,9 +109,9 @@ export function ChatListPage() {
           </div>
         ) : convs.map(conv => (
           <div key={conv.partnerId} onClick={() => navigate(`/chat/${conv.partnerId}`)}
-            className={`flex items-center gap-3 px-4 py-3 border-b border-theme cursor-pointer transition-colors ${
+            className={`flex items-center gap-3 border-b border-theme cursor-pointer transition-colors ${
               conv.unread > 0 ? 'bg-accent/8 hover:bg-accent/12' : 'hover:bg-surf'
-            }`}>
+            }`} style={{padding:'12px 16px'}}>
             {/* Avatar + badge */}
             <div className="relative flex-shrink-0">
               <div className="w-11 h-11 rounded-full bg-accent/20 border border-accent/30 flex items-center justify-center text-accent font-bold text-sm">
