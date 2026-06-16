@@ -341,7 +341,7 @@ function SellerProfile({ profile, user, fetchProfile }) {
 
       <div className="flex-1 overflow-y-auto scrollbar-hide pb-6">
         {/* Profile card */}
-        <div className="px-4 pt-4 pb-3">
+        <div className="" style={{padding:'12px 16px'}}>
           <div className="flex gap-4 items-start">
             <div className="w-16 h-16 rounded-full bg-accent-dim border-2 border-accent flex items-center justify-center text-accent font-bold text-xl flex-shrink-0">
               {initials(profile?.shop_name)}
