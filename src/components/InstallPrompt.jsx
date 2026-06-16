@@ -46,7 +46,7 @@ export default function InstallPrompt() {
 
   return (
     <div className="fixed bottom-24 left-4 right-4 md:left-auto md:right-6 md:w-80 bg-[#1a1035] border border-[#f5a623]/30 rounded-2xl z-50 shadow-xl" style={{padding:'12px 16px'}}>
-      <div className="flex items-start gap-3">
+      <div className="flex items-start gap-3" style={{margin: '0 0 12px'}}>
         <img src="/icon-192.png" alt="LokalBazaar" className="w-12 h-12 rounded-xl flex-shrink-0" />
         <div className="flex-1">
           <div className="text-sm font-semibold text-white">LokalBazaar install karo</div>
@@ -57,13 +57,13 @@ export default function InstallPrompt() {
       <div className="flex gap-2 mt-3">
         <button
           onClick={() => setShown(false)}
-          className="flex-1 py-2 rounded-xl border border-white/10 text-xs text-white/50 hover:text-white transition-colors"
+          className="flex-1 rounded-xl border border-white/10 text-xs text-white/50 hover:text-white transition-colors" style={{padding:'4px 8px'}}
         >
           Baad mein
         </button>
         <button
           onClick={install}
-          className="flex-1 py-2 rounded-xl bg-[#f5a623] text-white text-xs font-medium hover:bg-[#e09520] transition-colors"
+          className="flex-1 rounded-xl bg-[#f5a623] text-white text-xs font-medium hover:bg-[#e09520] transition-colors" style={{padding:'4px 8px'}}
         >
           Install karo 📲
         </button>
