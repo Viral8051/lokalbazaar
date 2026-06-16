@@ -328,7 +328,7 @@ export function ChatWindowPage() {
               )}
               <div className={`flex flex-col ${isMine ? 'items-end' : 'items-start'} ${showName ? 'mt-3' : 'mt-0.5'}`}>
                 {showName && (
-                  <span className="text-[10px] text-theme/30 mb-1 px-1">{getSenderName(msg)}</span>
+                  <span className="text-[10px] text-theme/30" style={{margin:'4px 0'}}>{getSenderName(msg)}</span>
                 )}
                 <div className={`max-w-[75%] rounded-2xl text-sm leading-relaxed ${
                   isMine ? 'bg-accent text-theme rounded-br-sm' : 'bg-input text-theme rounded-bl-sm'
