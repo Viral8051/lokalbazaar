@@ -73,7 +73,7 @@ function AccountSwitcherDropdown({ profile, user, onClose }) {
 
       {/* Saved accounts */}
       {otherAccounts.length > 0 && (
-        <div className="border-b border-theme">
+        <div className="border-b border-theme" style={{padding:'12px 16px'}}>
           <div className="px-4 pt-3 pb-1">
             <div className="text-[10px] text-hint uppercase tracking-wider">Saved Accounts</div>
           </div>
