@@ -59,7 +59,7 @@ const ALL_UNITS = ['piece', 'kg', 'gram', 'meter', 'ml', 'liter', 'set', 'pair',
 
 function Toggle({ value, onChange, label, sublabel }) {
   return (
-    <div className="flex items-center justify-between py-2">
+    <div className="flex items-center justify-between" style={{padding:'12px 16px'}}>
       <div>
         <div className="text-sm text-white font-medium">{label}</div>
         {sublabel && <div className="text-xs text-white/40">{sublabel}</div>}
@@ -360,7 +360,7 @@ export default function NewPostModal({ onClose, onPosted }) {
 
               {/* Description */}
               <div style={{margin: '12px 0'}}>
-                <label className="text-xs text-white/50 mb-1 block">Description *</label>
+                <label className="text-xs text-white/50 block" style={{margin:'0 0 12px'}}>Description *</label>
                 <div className="relative">
                   <textarea
                     ref={textareaRef}
@@ -410,7 +410,7 @@ export default function NewPostModal({ onClose, onPosted }) {
           {step === 3 && (
             <>
               {/* Mini summary */}
-              <div className="bg-white/5 rounded-xl p-3 flex items-center gap-3">
+              <div className="bg-white/5 rounded-xl flex items-center gap-3" style={{padding:'12px 16px', margin:' 0 0 12px'}}>
                 {imagePreview && <img src={imagePreview} className="w-12 h-12 rounded-lg object-cover flex-shrink-0" />}
                 <div className="min-w-0">
                   <div className="text-sm font-medium text-white truncate">{productName}</div>
@@ -419,8 +419,8 @@ export default function NewPostModal({ onClose, onPosted }) {
               </div>
 
               {/* Price + Unit */}
-              <div>
-                <label className="text-xs text-white/50 mb-1 block">Price</label>
+              <div style={{margin:'0 0 12px'}}>
+                <label className="text-xs text-white/50 block" style={{margin:'0 0 12px'}}>Price</label>
                 <div className="flex gap-2">
                   <div className="relative flex-1">
                     <span className="absolute left-3 top-1/2 -translate-y-1/2 text-white/40 text-sm">₹</span>
@@ -430,13 +430,15 @@ export default function NewPostModal({ onClose, onPosted }) {
                       placeholder="500"
                       type="text"
                       inputMode="numeric"
-                      className="w-full bg-white/10 border border-white/10 rounded-xl pl-8 pr-4 py-3 text-white text-sm outline-none focus:border-[#f5a623] transition-colors placeholder:text-white/30"
+                      className="w-full bg-white/10 border border-white/10 rounded-xl pl-8 text-white text-sm outline-none focus:border-[#f5a623] transition-colors placeholder:text-white/30"
+                      style={{padding:'4px 8px'}}
                     />
                   </div>
                   <select
                     value={unit}
                     onChange={e => setUnit(e.target.value)}
-                    className="bg-white/10 border border-white/10 rounded-xl px-3 py-3 text-white text-sm outline-none focus:border-[#f5a623] transition-colors"
+                    className="bg-white/10 border border-white/10 rounded-xl text-white text-sm outline-none focus:border-[#f5a623] transition-colors"
+                    style={{padding:'4px 8px'}}
                   >
                     {(selectedCat?.units || ALL_UNITS).map(u => (
                       <option key={u} value={u} className="bg-[#1a1035]">/ {u}</option>
@@ -447,9 +449,9 @@ export default function NewPostModal({ onClose, onPosted }) {
               </div>
 
               {/* Min order */}
-              <div>
+              <div style={{margin:'0 0 12px'}}>
                 <label className="text-xs text-white/50 mb-1 block">Minimum order</label>
-                <div className="flex items-center gap-3 bg-white/10 border border-white/10 rounded-xl px-4 py-3">
+                <div className="flex items-center gap-3 bg-white/10 border border-white/10 rounded-xl" style={{padding:'12px 16px'}}>
                   <button
                     type="button"
                     onClick={() => setMinOrder(m => String(Math.max(1, parseInt(m) - 1)))}
@@ -465,15 +467,15 @@ export default function NewPostModal({ onClose, onPosted }) {
               </div>
 
               {/* Summary card */}
-              <div className="bg-[#f5a623]/5 border border-[#f5a623]/20 rounded-xl p-4 space-y-2">
-                <div className="text-xs text-[#f5a623] font-medium mb-2">Product Summary</div>
+              <div className="bg-[#f5a623]/5 border border-[#f5a623]/20 rounded-xl space-y-2" style={{padding:'12px 16px'}}>
+                <div className="text-xs text-[#f5a623] font-medium" style={{margin:'0 0 12px'}}>Product Summary</div>
                 {[
                   ['Naam', productName],
                   ['Category', `${selectedCat?.emoji} ${subcategory || selectedCat?.label}`],
                   ['Price', price ? `₹${price}/${unit}` : 'Price nahi diya'],
                   ['Min Order', `${minOrder} ${unit}`],
                 ].map(([label, val]) => (
-                  <div key={label} className="flex justify-between text-xs">
+                  <div key={label} className="flex justify-between text-xs" style={{margin:'0 0 5px'}}>
                     <span className="text-white/40">{label}</span>
                     <span className="text-white">{val}</span>
                   </div>
