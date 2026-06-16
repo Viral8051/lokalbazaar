@@ -326,7 +326,7 @@ function SellerProfile({ profile, user, fetchProfile }) {
   return (
     <Layout active="profile">
       {/* Header */}
-      <div className="flex items-center justify-between px-4 py-3 border-b border-theme sticky top-0 bg-theme z-10">
+      <div className="flex items-center justify-between border-b border-theme sticky top-0 bg-theme z-10" style={{padding:'12px 16px'}}>
         <AvatarWithSwitcher profile={profile} user={user} />
         <h1 className="text-base font-semibold text-theme">My Profile</h1>
         <div className="flex items-center gap-3">
