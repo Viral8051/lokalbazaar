@@ -109,8 +109,8 @@ export default function AnalyticsPage() {
 
         <div className="" style={{margin:'0 0 12px'}}>
           <div className="text-xs text-hint uppercase tracking-wider" style={{margin : '0 0 12px'}}>Engagement</div>
-          <div className="bg-surf border border-theme rounded-2xl p-4">
-            <div className="flex items-center justify-between mb-3">
+          <div className="bg-surf border border-theme rounded-2xl" style={{padding:'12px 16px'}}>
+            <div className="flex items-center justify-between" style={{margin:'0 0 12px'}}>
               <div>
                 <div className="text-2xl font-bold text-theme">{engagementRate}</div>
                 <div className="text-xs text-sub">Avg engagement per post</div>
