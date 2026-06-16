@@ -94,12 +94,12 @@ export function ChatListPage() {
 
   return (
     <Layout active="chat">
-      <div className="px-4 py-3 border-b border-theme">
+      <div className="border-b border-theme" style={{padding:'12px 16px'}}>
         <h1 className="text-base font-semibold text-theme">Messages</h1>
       </div>
       <div className="flex-1 overflow-y-auto scrollbar-hide">
         {loading ? (
-          <div className="p-4 flex flex-col gap-3">
+          <div className="flex flex-col gap-3" style={{padding:'12px 16px'}}>
             {[1,2,3].map(i => <div key={i} className="h-16 bg-surf rounded-xl animate-pulse"/>)}
           </div>
         ) : convs.length === 0 ? (

@@ -1,11 +1,13 @@
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import { House, Search, MessageCircle, User} from 'lucide-react';
+
 
 const tabs = [
-  { id: 'home', label: 'Home', emoji: '🏠', path: '/home' },
-  { id: 'explore', label: 'Explore', emoji: '🔍', path: '/explore' },
-  { id: 'chat', label: 'Messages', emoji: '💬', path: '/chat' },
-  { id: 'profile', label: 'Profile', emoji: '👤', path: '/profile' },
+  { id: 'home', label: 'Home', icon: House, path: '/home' },
+  { id: 'explore', label: 'Explore',  icon: Search, path: '/explore' },
+  { id: 'chat', label: 'Messages', icon: MessageCircle, path: '/chat' },
+  { id: 'profile', label: 'Profile', icon: User, path: '/profile' },
 ]
 
 export default function SideNav({ active }) {
@@ -22,7 +24,9 @@ export default function SideNav({ active }) {
 
       {/* Nav items */}
       <nav className="flex flex-col gap-1 flex-1">
-        {tabs.map(tab => (
+        {tabs.map(tab => {
+            const Icon = tab.icon  // ← capital I zaroori hai
+          return(
           <button
             key={tab.id}
             onClick={() => navigate(tab.path)}
@@ -32,10 +36,10 @@ export default function SideNav({ active }) {
                 : 'text-white/50 hover:text-white hover:bg-white/5'
             }`}
           >
-            <span className="text-lg">{tab.emoji}</span>
+            <Icon size={18}/>
             {tab.label}
           </button>
-        ))}
+        )})}
       </nav>
 
       {/* Profile info at bottom */}

@@ -2,6 +2,7 @@ import React from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import ThemeToggle from './ThemeToggle'
+import { House, Search, MessageCircle, User, BarChart2 } from 'lucide-react';
 
 export default function Layout({ children, active }) {
   const navigate = useNavigate()
@@ -13,11 +14,11 @@ export default function Layout({ children, active }) {
   const displayName = profile?.role === 'buyer' ? profile?.owner_name : profile?.shop_name
 
   const tabs = [
-    { id: 'home',      label: 'Home',      icon: '🏠', path: '/home' },
-    { id: 'explore',   label: 'Explore',   icon: '🔍', path: '/explore' },
-    { id: 'chat',      label: 'Chat',      icon: '💬', path: '/chat' },
-    { id: 'analytics', label: 'Analytics', icon: '📊', path: '/analytics', sellerOnly: true },
-    { id: 'profile',   label: 'Profile',   icon: '👤', path: '/profile' },
+    { id: 'home',      label: 'Home',      icon: House, path: '/home' },
+    { id: 'explore',   label: 'Explore',   icon: Search, path: '/explore' },
+    { id: 'chat',      label: 'Chat',      icon: MessageCircle, path: '/chat' },
+    { id: 'analytics', label: 'Analytics', icon: BarChart2, path: '/analytics', sellerOnly: true },
+    { id: 'profile',   label: 'Profile',   icon: User, path: '/profile' },
   ]
 
   const visibleTabs = tabs.filter(t => !t.sellerOnly || profile?.role === 'seller')
@@ -53,7 +54,9 @@ export default function Layout({ children, active }) {
 
           {/* Nav items */}
           <nav style={{ padding: '10px 8px', flex: 1 }}>
-            {visibleTabs.map(tab => (
+            {visibleTabs.map(tab => {
+               const Icon = tab.icon
+              return(
               <button key={tab.id} onClick={() => navigate(tab.path)} style={{
                 display: 'flex', alignItems: 'center', gap: 10,
                 width: '100%', padding: '11px 14px', marginBottom: 2,
@@ -63,15 +66,15 @@ export default function Layout({ children, active }) {
                 color: cur === tab.id ? '#FF4C29' : 'var(--text-sub)',
                 transition: 'all 0.15s',
               }}>
-                <span style={{ fontSize: 18, width: 22, textAlign: 'center' }}>{tab.icon}</span>
+                <Icon size={18}/>
                 {tab.label}
               </button>
-            ))}
+            )})}
           </nav>
 
           {/* Bottom — profile + theme */}
           <div style={{ padding: '12px 8px', borderTop: '1px solid var(--border)' }}>
-            <ThemeToggle className="w-full mb-2" />
+            
             <button onClick={() => navigate('/profile')} style={{
               display: 'flex', alignItems: 'center', gap: 10,
               width: '100%', padding: '10px 10px',
@@ -105,7 +108,7 @@ export default function Layout({ children, active }) {
 
         {/* Right panel — Nearby sellers */}
         <aside style={{
-          width: 240,
+          width: 'clamp(180px, 20vw, 240px)',
           background: 'var(--bg-card)',
           borderLeft: '1px solid var(--border)',
           padding: '20px 16px',
@@ -136,21 +139,24 @@ export default function Layout({ children, active }) {
           borderTop: '1px solid var(--border)',
           paddingBottom: 'env(safe-area-inset-bottom, 0px)',
         }}>
-          {visibleTabs.filter(t => t.id !== 'analytics').map(tab => (
-            <button key={tab.id} onClick={() => navigate(tab.path)} style={{
-              flex: 1, display: 'flex', flexDirection: 'column',
-              alignItems: 'center', gap: 3, padding: '10px 4px 8px',
-              background: 'transparent', border: 'none', cursor: 'pointer',
-              color: cur === tab.id ? '#FF4C29' : 'var(--text-hint)',
-              fontFamily: 'inherit', transition: 'color 0.2s',
-            }}>
-              <span style={{ fontSize: 20, lineHeight: 1 }}>{tab.icon}</span>
-              <span style={{ fontSize: 10, fontWeight: 600 }}>{tab.label}</span>
-              {cur === tab.id && (
-                <div style={{ width: 4, height: 4, borderRadius: '50%', background: '#FF4C29' }} />
-              )}
-            </button>
-          ))}
+          {visibleTabs.filter(t => t.id !== 'analytics').map(tab => {
+  const Icon = tab.icon  // ← yeh add karo
+  return (
+    <button key={tab.id} onClick={() => navigate(tab.path)} style={{
+      flex: 1, display: 'flex', flexDirection: 'column',
+      alignItems: 'center', gap: 3, padding: '10px 4px 8px',
+      background: 'transparent', border: 'none', cursor: 'pointer',
+      color: cur === tab.id ? '#FF4C29' : 'var(--text-hint)',
+      fontFamily: 'inherit', transition: 'color 0.2s',
+    }}>
+      <Icon size={20} />  {/* ← span hata ke Icon component */}
+      <span style={{ fontSize: 10, fontWeight: 600 }}>{tab.label}</span>
+      {cur === tab.id && (
+        <div style={{ width: 4, height: 4, borderRadius: '50%', background: '#FF4C29' }} />
+      )}
+    </button>
+  )
+})}
         </div>
       </div>
 

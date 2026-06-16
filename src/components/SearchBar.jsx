@@ -1,28 +1,25 @@
 import { useState, useRef } from 'react'
-import { Mic, Search  } from 'lucide-react';
+import { Mic, Search } from 'lucide-react'
 
 const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent)
 
 export default function SearchBar({ value, onChange, placeholder = 'Search...' }) {
   const [listening, setListening] = useState(false)
   const [showIOSHint, setShowIOSHint] = useState(false)
+  const [focused, setFocused] = useState(false)
   const recognitionRef = useRef(null)
   const inputRef = useRef(null)
 
   function startVoice() {
     if (isIOS) {
-      // iOS pe input focus karo aur hint dikhao
       inputRef.current?.focus()
       setShowIOSHint(true)
       setTimeout(() => setShowIOSHint(false), 4000)
       return
     }
-
-    // Android + Desktop
     const SR = window.SpeechRecognition || window.webkitSpeechRecognition
     if (!SR) { alert('Voice search support nahi hai'); return }
     if (listening) { recognitionRef.current?.stop(); setListening(false); return }
-
     try {
       const recognition = new SR()
       recognitionRef.current = recognition
@@ -43,43 +40,81 @@ export default function SearchBar({ value, onChange, placeholder = 'Search...' }
   }
 
   return (
-    <div className="relative flex gap-2 items-center px-4">
-      <div className="flex-1 flex items-center gap-2 bg-white/10 border border-white/10 rounded-full px-3 py-2 focus-within:border-[#f5a623] transition-colors">
-        <span className="text-sm text-white/40"><Search size={16} /></span>
+    <div style={{ position: 'relative', display: 'flex', gap: 8, alignItems: 'center' }}>
+
+      {/* Search box */}
+      <div style={{
+        flex: 1,
+        display: 'flex',
+        alignItems: 'center',
+        gap: 8,
+        background: 'var(--bg-input)',
+        border: `1px solid ${focused ? '#FF4C29' : 'var(--border-md)'}`,
+        borderRadius: 999,
+        padding: '7px 14px',
+        transition: 'border-color 0.2s',
+      }}>
+        <Search size={16} style={{ color: 'var(--text-hint)', flexShrink: 0 }} />
         <input
           ref={inputRef}
           value={value}
           onChange={e => onChange(e.target.value)}
+          onFocus={() => setFocused(true)}
+          onBlur={() => setFocused(false)}
           placeholder={placeholder}
-          className="flex-1 bg-transparent text-white text-sm outline-none placeholder:text-white/30"
+          style={{
+            flex: 1,
+            background: 'transparent',
+            border: 'none',
+            outline: 'none',
+            color: 'var(--text)',
+            fontSize: 14,
+            fontFamily: 'inherit',
+          }}
         />
         {value && (
-          <button onClick={() => onChange('')} className="text-white/30 hover:text-white text-xs transition-colors">✕</button>
+          <button
+            onClick={() => onChange('')}
+            style={{
+              background: 'none', border: 'none', cursor: 'pointer',
+              color: 'var(--text-hint)', fontSize: 12, padding: 0,
+            }}
+          >✕</button>
         )}
       </div>
 
       {/* Mic button */}
       <button
         onClick={startVoice}
-        className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 transition-all ${
-          listening
-            ? 'bg-red-500 scale-110 shadow-lg shadow-red-500/40'
-            : 'bg-[#f5a623] hover:bg-[#e09520]'
-        }`}
+        style={{
+          width: 36, height: 36, borderRadius: '50%',
+          background: listening ? '#ef4444' : '#FF4C29',
+          border: 'none', cursor: 'pointer',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          flexShrink: 0, transition: 'all 0.2s',
+          transform: listening ? 'scale(1.1)' : 'scale(1)',
+        }}
       >
-        <span className="text-base"><Mic size={17}/></span>
+        <Mic size={17} color="white" />
       </button>
 
-      {/* iOS animated hint */}
+      {/* iOS hint */}
       {showIOSHint && (
-        <div className="absolute -bottom-16 right-0 z-50 flex flex-col items-end">
-          {/* Arrow pointing down-right toward keyboard mic */}
-          <div className="flex items-center gap-2 bg-[#1a1035] border border-[#f5a623]/40 rounded-2xl px-3 py-2 shadow-xl">
-            <span className="text-sm"><Mic/></span>
-            <span className="text-xs text-white/80 whitespace-nowrap">Keyboard pe mic dabao</span>
+        <div style={{
+          position: 'absolute', bottom: -64, right: 0,
+          zIndex: 50, display: 'flex', flexDirection: 'column', alignItems: 'flex-end',
+        }}>
+          <div style={{
+            display: 'flex', alignItems: 'center', gap: 8,
+            background: 'var(--bg-card)', border: '1px solid var(--border)',
+            borderRadius: 16, padding: '8px 12px', boxShadow: '0 4px 20px rgba(0,0,0,0.2)',
+          }}>
+            <Mic size={14} color="#FF4C29" />
+            <span style={{ fontSize: 12, color: 'var(--text-sub)', whiteSpace: 'nowrap' }}>
+              Keyboard pe mic dabao
+            </span>
           </div>
-          {/* Animated bouncing arrow */}
-          <div className="animate-bounce text-[#f5a623] text-xl mt-1 mr-1">↓</div>
+          <div style={{ color: '#FF4C29', fontSize: 20, marginTop: 4, marginRight: 4 }}>↓</div>
         </div>
       )}
     </div>

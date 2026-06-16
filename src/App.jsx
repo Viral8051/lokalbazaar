@@ -14,19 +14,19 @@ import InstallPrompt from './components/InstallPrompt'
 import NotificationSetup from './components/NotificationSetup'
 
 function ProtectedRoute({ children }) {
-  const { user, loading, needsOnboarding } = useAuth()
-  const navigate = useNavigate()
+  // const { user, loading, needsOnboarding } = useAuth()
+  // const navigate = useNavigate()
 
-  useEffect(() => {
-    if (!loading && needsOnboarding) navigate('/onboarding')
-  }, [loading, needsOnboarding])
+  // useEffect(() => {
+  //   if (!loading && needsOnboarding) navigate('/onboarding')
+  // }, [loading, needsOnboarding])
 
-  if (loading) return (
-    <div className="min-h-screen bg-[#0f0a1e] flex items-center justify-center">
-      <div className="text-[#f5a623] text-2xl animate-pulse">🛍️</div>
-    </div>
-  )
-  if (!user) return <Navigate to="/login" replace />
+  // if (loading) return (
+  //   <div className="min-h-screen bg-[#0f0a1e] flex items-center justify-center">
+  //     <div className="text-[#f5a623] text-2xl animate-pulse">🛍️</div>
+  //   </div>
+  // )
+  // if (!user) return <Navigate to="/login" replace />
   return children
 }
 
@@ -35,6 +35,7 @@ function AppRoutes() {
   return (
     <Routes>
       <Route path="/login" element={user ? <Navigate to="/home" /> : <LoginPage />} />
+      {/* <Route path="/login" element={<LoginPage />} /> */}
       <Route path="/onboarding" element={<ProtectedRoute><OnboardingPage /></ProtectedRoute>} />
       <Route path="/home" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
       <Route path="/explore" element={<ProtectedRoute><ExplorePage /></ProtectedRoute>} />

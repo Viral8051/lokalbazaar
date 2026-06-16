@@ -9,8 +9,8 @@ export default function ThemeToggle({ className = '' }) {
       onClick={toggleTheme}
       className={`flex items-center gap-2 px-3 py-1.5 rounded-xl border transition-all ${className}`}
       style={{
-        background: 'var(--bg-surf)',
-        border: '1px solid var(--border-md)',
+        background: 'none',
+        border: 'none',
         color: 'var(--text-sub)',
       }}
       title={theme === 'dark' ? 'Light mode pe switch karo' : 'Dark mode pe switch karo'}

@@ -8,6 +8,7 @@ import PostCard from '../components/PostCard'
 import Stories from '../components/Stories'
 import Layout from '../components/Layout'
 import ThemeToggle from '../components/ThemeToggle'
+import { Bell } from 'lucide-react';
 
 export default function HomePage() {
   const { profile } = useAuth()
@@ -68,7 +69,7 @@ export default function HomePage() {
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
           <ThemeToggle />
-          <button style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 22, color: 'var(--text-sub)' }}>🔔</button>
+          <button style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 22, color: 'var(--text-sub)' }}><Bell size={16}/></button>
         </div>
       </div>
 
