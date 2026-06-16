@@ -214,19 +214,19 @@ function BuyerProfile({ profile, user, fetchProfile }) {
                   <label className="text-xs text-hint mb-1 block">Naam</label>
                   <input value={editForm.owner_name} onChange={e => setEditForm(f => ({ ...f, owner_name: e.target.value }))}
                     placeholder="Tumhara naam"
-                    className="w-full bg-input border border-theme rounded-xl px-3 py-2.5 text-theme text-sm outline-none focus:border-accent transition-colors" />
+                    className="w-full bg-input border border-theme rounded-xl text-theme text-sm outline-none focus:border-accent transition-colors" style={{padding:'4px 8px'}}/>
                 </div>
                 <div>
                   <label className="text-xs text-hint mb-1 block">Phone</label>
                   <input value={editForm.phone} onChange={e => setEditForm(f => ({ ...f, phone: e.target.value }))}
                     placeholder="+91 98765 43210" type="tel"
-                    className="w-full bg-input border border-theme rounded-xl px-3 py-2.5 text-theme text-sm outline-none focus:border-accent transition-colors" />
+                    className="w-full bg-input border border-theme rounded-xl text-theme text-sm outline-none focus:border-accent transition-colors" style={{padding:'4px 8px'}}/>
                 </div>
                 <div>
                   <label className="text-xs text-hint mb-1 block">Sheher</label>
                   <input value={editForm.city} onChange={e => setEditForm(f => ({ ...f, city: e.target.value }))}
                     placeholder="Jamnagar"
-                    className="w-full bg-input border border-theme rounded-xl px-3 py-2.5 text-theme text-sm outline-none focus:border-accent transition-colors" />
+                    className="w-full bg-input border border-theme rounded-xl text-theme text-sm outline-none focus:border-accent transition-colors"  style={{padding:'4px 8px'}}/>
                 </div>
                 <button onClick={saveProfile} disabled={saving}
                   className="w-full bg-accent text-theme text-sm font-medium py-2.5 rounded-xl hover:bg-accent transition-colors disabled:opacity-50 mt-1">
