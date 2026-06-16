@@ -23,7 +23,7 @@ function PostRow({ post }) {
     return `${Math.floor(diff/86400)}d ago`
   }
   return (
-    <div className="flex items-center gap-3 border-b border-theme last:border-0" style={{padding: '12px 16px'}}>
+    <div className="flex items-center gap-3 border-b border-theme last:border-0">
       {post.image_url
         ? <img src={post.image_url} alt="" className="w-12 h-12 rounded-xl object-cover flex-shrink-0" />
         : <div className="w-12 h-12 rounded-xl bg-surf flex items-center justify-center text-xl flex-shrink-0">🛍️</div>
@@ -75,7 +75,7 @@ export default function AnalyticsPage() {
 
   return (
     <Layout active="profile">
-      <div className="flex items-center gap-3 px-4 py-3 border-b border-theme sticky top-0 bg-theme z-10">
+      <div className="flex items-center gap-3 border-b border-theme sticky top-0 bg-theme z-10" style={{padding:'12px 16px'}}>
         <button onClick={() => navigate(-1)} className="text-sub hover:text-theme text-xl">←</button>
         <h1 className="text-base font-semibold text-theme flex-1">Analytics</h1>
         {profile?.plan !== 'premium' && (
@@ -85,7 +85,7 @@ export default function AnalyticsPage() {
         )}
       </div>
 
-      <div className="flex-1 overflow-y-auto scrollbar-hide pb-6">
+      <div className="flex-1 overflow-y-auto scrollbar-hide" style={{padding:'12px 16px'}}>
         <div className="flex gap-2 px-4 py-3">
           {[{ id:'week', label:'Is hafte' }, { id:'month', label:'Is mahine' }, { id:'all', label:'Sab time' }].map(p => (
             <button key={p.id} onClick={() => setPeriod(p.id)}
