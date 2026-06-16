@@ -40,6 +40,17 @@ function AccountSwitcherDropdown({ profile, user, onClose }) {
     <div
       ref={ref}
       className="absolute top-16 left-4 right-4 z-50 bg-card border border-theme rounded-2xl shadow-2xl overflow-hidden"
+      style={{
+  position: 'absolute',
+  top: 40,
+  left: 0,
+  width: 280,
+  zIndex: 9999,   // ← bahut high
+  background: 'var(--bg-card)',
+  border: '1px solid var(--border)',
+  borderRadius: 16,
+  boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
+  overflow: 'hidden',}}
     >
       {/* Current account */}
       <div className=" border-b border-theme" style={{padding:'12px 16px'}}>
