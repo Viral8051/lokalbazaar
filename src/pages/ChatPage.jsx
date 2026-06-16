@@ -330,9 +330,9 @@ export function ChatWindowPage() {
                 {showName && (
                   <span className="text-[10px] text-theme/30 mb-1 px-1">{getSenderName(msg)}</span>
                 )}
-                <div className={`max-w-[75%] px-3 py-2 rounded-2xl text-sm leading-relaxed ${
+                <div className={`max-w-[75%] rounded-2xl text-sm leading-relaxed ${
                   isMine ? 'bg-accent text-theme rounded-br-sm' : 'bg-input text-theme rounded-bl-sm'
-                }`}>
+                }`} style={{padding:'4px 8px'}}>
                   {msg.text}
                 </div>
                 {isLastInGrp && (
