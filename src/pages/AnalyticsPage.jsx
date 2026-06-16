@@ -98,7 +98,7 @@ export default function AnalyticsPage() {
         </div>
 
         <div className="" style={{margin:'0 0 12px'}}>
-          <div className="text-xs text-hint uppercase tracking-wider mb-3">Overview</div>
+          <div className="text-xs text-hint uppercase tracking-wider" style={{margin : '0 0 12px'}}>Overview</div>
           <div className="grid grid-cols-2 gap-3">
             <StatCard emoji="📸" label="Total Posts"  value={analytics?.total_posts    || 0} sub="Published products" />
             <StatCard emoji="❤️" label="Total Likes"  value={analytics?.total_likes    || 0} sub="Across all posts" />
@@ -108,7 +108,7 @@ export default function AnalyticsPage() {
         </div>
 
         <div className="" style={{margin:'0 0 12px'}}>
-          <div className="text-xs text-hint uppercase tracking-wider mb-3">Engagement</div>
+          <div className="text-xs text-hint uppercase tracking-wider" style={{margin : '0 0 12px'}}>Engagement</div>
           <div className="bg-surf border border-theme rounded-2xl p-4">
             <div className="flex items-center justify-between mb-3">
               <div>
@@ -140,7 +140,7 @@ export default function AnalyticsPage() {
 
         {topPost && (
           <div className="" style={{margin:'0 0 12px'}}>
-            <div className="text-xs text-hint uppercase tracking-wider mb-3">Top Post 🏆</div>
+            <div className="text-xs text-hint uppercase tracking-wider" style={{margin : '0 0 12px'}}>Top Post 🏆</div>
             <div className="bg-accent-dim border border-accent rounded-2xl p-3 flex items-center gap-3" style={{ borderColor:'rgba(255,76,41,0.2)' }}>
               {topPost.image_url
                 ? <img src={topPost.image_url} alt="" className="w-14 h-14 rounded-xl object-cover flex-shrink-0" />
@@ -159,7 +159,7 @@ export default function AnalyticsPage() {
         )}
 
         <div className="" style={{margin:'0 0 12px'}}>
-          <div className="text-xs text-hint uppercase tracking-wider mb-3">💡 Tips</div>
+          <div className="text-xs text-hint uppercase tracking-wider" style={{margin : '0 0 12px'}}>💡 Tips</div>
           <div className="flex flex-col gap-2">
             {[
               { tip:'Price clearly likho — buyers seedha message karte hain', icon:'💰' },
@@ -176,7 +176,7 @@ export default function AnalyticsPage() {
         </div>
 
         <div className="px-4">
-          <div className="text-xs text-hint uppercase tracking-wider mb-3">Recent Posts Performance</div>
+          <div className="text-xs text-hint uppercase tracking-wider" style={{margin : '0 0 12px'}}>Recent Posts Performance</div>
           <div className="bg-surf border border-theme rounded-2xl px-3">
             {loading ? (
               <div className="py-8 text-center text-hint text-sm">Loading...</div>
