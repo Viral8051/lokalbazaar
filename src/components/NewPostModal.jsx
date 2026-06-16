@@ -252,7 +252,7 @@ export default function NewPostModal({ onClose, onPosted }) {
         {profile?.plan !== 'premium' && (
           <div className=" bg-[#f5a623]/10 border border-[#f5a623]/20 rounded-xl px-3 py-2 flex items-center justify-between flex-shrink-0" style={{padding:'12px 16px', margin:'0 16px 12px'}}>
             <span className="text-xs text-[#f5a623]">Free: {10 - (profile?.post_count ?? 0)} posts baaki</span>
-            <button className="text-xs bg-[#f5a623] text-white px-3 py-1 rounded-full">Upgrade</button>
+            <button className="text-xs bg-[#f5a623] text-white rounded-full" style={{padding:'4px 8px'}}>Upgrade</button>
           </div>
         )}
 
@@ -293,7 +293,8 @@ export default function NewPostModal({ onClose, onPosted }) {
                   value={productName}
                   onChange={e => setProductName(e.target.value)}
                   placeholder="Jaise: Bandhani Saree, Chocolate Cake..."
-                  className="w-full bg-white/10 border border-white/10 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-[#f5a623] transition-colors placeholder:text-white/30"
+                  className="w-full bg-white/10 border border-white/10 rounded-xl text-white text-sm outline-none focus:border-[#f5a623] transition-colors placeholder:text-white/30"
+                  style={{padding:'4px 8px'}}
                 />
               </div>
 
