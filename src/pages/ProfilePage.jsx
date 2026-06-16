@@ -229,7 +229,7 @@ function BuyerProfile({ profile, user, fetchProfile }) {
                     className="w-full bg-input border border-theme rounded-xl text-theme text-sm outline-none focus:border-accent transition-colors"  style={{padding:'4px 8px'}}/>
                 </div>
                 <button onClick={saveProfile} disabled={saving}
-                  className="w-full bg-accent text-theme text-sm font-medium py-2.5 rounded-xl hover:bg-accent transition-colors disabled:opacity-50 mt-1">
+                  className="w-full bg-accent text-theme text-sm font-medium rounded-xl hover:bg-accent transition-colors disabled:opacity-50 mt-1" style={{padding:'4px 8px'}}>
                   {saving ? 'Save ho raha hai...' : 'Save karo ✓'}
                 </button>
               </div>
