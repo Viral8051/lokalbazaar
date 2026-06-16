@@ -227,7 +227,7 @@ export default function NewPostModal({ onClose, onPosted }) {
       <div className="bg-[#1a1035] w-full max-w-sm rounded-t-2xl max-h-[92vh] flex flex-col">
 
         {/* Header */}
-        <div className="flex items-center justify-between px-5 pt-5 pb-3 flex-shrink-0">
+        <div className="flex items-center justify-between pb-3 flex-shrink-0" style={{padding:'12px 16px'}}>
           <div className="flex items-center gap-3">
             {step > 1 && (
               <button onClick={() => { setStep(s => s - 1); setError('') }}
@@ -242,7 +242,7 @@ export default function NewPostModal({ onClose, onPosted }) {
         </div>
 
         {/* Progress bar */}
-        <div className="flex gap-1 px-5 mb-4 flex-shrink-0">
+        <div className="flex gap-1 flex-shrink-0" style={{padding:'12px 16px', margin:'0 0 12px'}}>
           {[1, 2, 3].map(s => (
             <div key={s} className={`flex-1 h-1 rounded-full transition-colors ${s <= step ? 'bg-[#f5a623]' : 'bg-white/10'}`} />
           ))}
@@ -250,7 +250,7 @@ export default function NewPostModal({ onClose, onPosted }) {
 
         {/* Free plan badge */}
         {profile?.plan !== 'premium' && (
-          <div className="mx-5 mb-3 bg-[#f5a623]/10 border border-[#f5a623]/20 rounded-xl px-3 py-2 flex items-center justify-between flex-shrink-0">
+          <div className=" bg-[#f5a623]/10 border border-[#f5a623]/20 rounded-xl px-3 py-2 flex items-center justify-between flex-shrink-0" style={{padding:'12px 16px', margin:'0 0 12px'}}>
             <span className="text-xs text-[#f5a623]">Free: {10 - (profile?.post_count ?? 0)} posts baaki</span>
             <button className="text-xs bg-[#f5a623] text-white px-3 py-1 rounded-full">Upgrade</button>
           </div>
