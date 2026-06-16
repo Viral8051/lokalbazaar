@@ -242,7 +242,7 @@ function BuyerProfile({ profile, user, fetchProfile }) {
               <div className="text-2xl mb-1">🛍️</div>
               <p className="text-sm text-sub font-medium">Kuch dhundh rahe ho?</p>
               <p className="text-xs text-hint mt-0.5 mb-3">Apne sheher ke sellers explore karo</p>
-              <a href="/explore" className="inline-block bg-accent text-theme text-xs font-semibold px-5 py-2 rounded-xl hover:bg-accent transition-colors">
+              <a href="/explore" className="inline-block bg-accent text-theme text-xs font-semibold rounded-xl hover:bg-accent transition-colors" style={{padding:'4px 8px'}}>
                 Explore karo →
               </a>
             </div>
