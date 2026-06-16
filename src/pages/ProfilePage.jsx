@@ -54,7 +54,7 @@ function AccountSwitcherDropdown({ profile, user, onClose }) {
         >
       {/* Current account */}
       <div className=" border-b border-theme" style={{padding:'12px 16px'}}>
-        <div className="text-[10px] text-hint uppercase tracking-wider mb-2">Current Account</div>
+        <div className="text-[10px] text-hint uppercase tracking-wider" style={{margin:'0 0 12px'}}>Current Account</div>
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-full bg-accent-dim border-2 border-accent flex items-center justify-center text-accent font-bold text-sm flex-shrink-0">
             {initials(profile?.role === 'buyer' ? profile?.owner_name : profile?.shop_name)}
@@ -75,7 +75,7 @@ function AccountSwitcherDropdown({ profile, user, onClose }) {
       {otherAccounts.length > 0 && (
         <div className="border-b border-theme" style={{padding:'12px 16px'}}>
           <div className="px-4 pt-3 pb-1">
-            <div className="text-[10px] text-hint uppercase tracking-wider">Saved Accounts</div>
+            <div className="text-[10px] text-hint uppercase tracking-wider" style={{margin:'0 0 12px'}}>Saved Accounts</div>
           </div>
           {otherAccounts.map(acc => (
             <button
