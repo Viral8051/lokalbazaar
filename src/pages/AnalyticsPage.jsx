@@ -6,7 +6,7 @@ import Layout from '../components/Layout'
 
 function StatCard({ emoji, label, value, sub }) {
   return (
-    <div className="bg-surf border border-theme rounded-2xl p-4 flex flex-col gap-1">
+    <div className="bg-surf border border-theme rounded-2xl flex flex-col gap-1" style={{padding:'12px 16px'}}>
       <div className="text-2xl">{emoji}</div>
       <div className="text-2xl font-bold text-theme">{value ?? '—'}</div>
       <div className="text-xs font-medium text-sub">{label}</div>
