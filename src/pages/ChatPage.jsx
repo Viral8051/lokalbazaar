@@ -349,11 +349,11 @@ export function ChatWindowPage() {
       </div>
 
       {/* Input */}
-      <div className="flex items-center gap-2 px-4 py-3 border-t border-theme bg-theme">
+      <div className="flex items-center gap-2 border-t border-theme bg-theme" style={{padding:'12px 16px'}}>
         <input ref={inputRef} value={text} onChange={e => setText(e.target.value)}
           onKeyDown={e => e.key === 'Enter' && sendMessage()}
           placeholder="Message karo..."
-          className="flex-1 bg-input border border-theme rounded-full px-4 py-2.5 text-sm text-theme outline-none focus:border-accent transition-colors placeholder:text-theme/30"/>
+          className="flex-1 bg-input border border-theme rounded-full text-sm text-theme outline-none focus:border-accent transition-colors placeholder:text-theme/30" style={{padding:'4px 8px'}}/>
         <button onClick={sendMessage} disabled={!text.trim()}
           className="w-10 h-10 rounded-full bg-accent flex items-center justify-center text-theme text-lg disabled:opacity-40 hover:bg-accent transition-colors flex-shrink-0">
           ➤
