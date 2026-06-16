@@ -186,7 +186,7 @@ function BuyerProfile({ profile, user, fetchProfile }) {
 
       <div className="flex-1 overflow-y-auto scrollbar-hide pb-10">
         <div className="px-4 pt-6">
-          <div className="bg-surf border border-theme rounded-2xl p-5">
+          <div className="bg-surf border border-theme rounded-2xl p-5" style={{margin:'0 16px'}}>
 
             <div className="flex flex-col items-center " style={{margin:'0 0 12px 0'}}>
               <div className="w-20 h-20 rounded-full bg-accent-dim border-2 border-accent flex items-center justify-center text-accent font-bold text-2xl mb-2">
