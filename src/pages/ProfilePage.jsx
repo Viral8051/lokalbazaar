@@ -351,13 +351,13 @@ function SellerProfile({ profile, user, fetchProfile }) {
                 <div className="flex flex-col gap-2">
                   <input value={editForm.shop_name || ''} onChange={e => setEditForm(f => ({ ...f, shop_name: e.target.value }))}
                     placeholder="Dukaan ka naam"
-                    className="bg-input border border-theme rounded-lg px-3 py-1.5 text-theme text-sm outline-none focus:border-accent transition-colors" />
+                    className="bg-input border border-theme rounded-lg text-theme text-sm outline-none focus:border-accent transition-colors" style={{padding:'4px 8px'}}/>
                   <input value={editForm.city || ''} onChange={e => setEditForm(f => ({ ...f, city: e.target.value }))}
                     placeholder="Sheher"
-                    className="bg-input border border-theme rounded-lg px-3 py-1.5 text-theme text-sm outline-none focus:border-accent transition-colors" />
+                    className="bg-input border border-theme rounded-lg text-theme text-sm outline-none focus:border-accent transition-colors" style={{padding:'4px 8px'}}/>
                   <textarea value={editForm.bio || ''} onChange={e => setEditForm(f => ({ ...f, bio: e.target.value }))}
                     placeholder="Apne baare mein..." rows={2}
-                    className="bg-input border border-theme rounded-lg px-3 py-1.5 text-theme text-sm outline-none focus:border-accent transition-colors resize-none" />
+                    className="bg-input border border-theme rounded-lg text-theme text-sm outline-none focus:border-accent transition-colors resize-none" style={{padding:'4px 8px'}}/>
                   <button onClick={saveProfile} disabled={saving}
                     className="bg-accent text-theme text-xs font-medium py-2 rounded-lg hover:bg-accent transition-colors disabled:opacity-50">
                     {saving ? 'Saving...' : 'Save karo'}
