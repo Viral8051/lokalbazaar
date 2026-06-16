@@ -211,19 +211,19 @@ function BuyerProfile({ profile, user, fetchProfile }) {
             {editing ? (
               <div className="flex flex-col gap-3" style={{padding: '12px 16px'}}>
                 <div>
-                  <label className="text-xs text-hint mb-1 block">Naam</label>
+                  <label className="text-xs text-hint block" style={{margin:'0 0 12px'}}>Naam</label>
                   <input value={editForm.owner_name} onChange={e => setEditForm(f => ({ ...f, owner_name: e.target.value }))}
                     placeholder="Tumhara naam"
                     className="w-full bg-input border border-theme rounded-xl text-theme text-sm outline-none focus:border-accent transition-colors" style={{padding:'4px 8px'}}/>
                 </div>
                 <div>
-                  <label className="text-xs text-hint mb-1 block">Phone</label>
+                  <label className="text-xs text-hint block" style={{margin:'0 0 12px'}}>Phone</label>
                   <input value={editForm.phone} onChange={e => setEditForm(f => ({ ...f, phone: e.target.value }))}
                     placeholder="+91 98765 43210" type="tel"
                     className="w-full bg-input border border-theme rounded-xl text-theme text-sm outline-none focus:border-accent transition-colors" style={{padding:'4px 8px'}}/>
                 </div>
                 <div>
-                  <label className="text-xs text-hint mb-1 block">Sheher</label>
+                  <label className="text-xs text-hint block" style={{margin:'0 0 12px'}}>Sheher</label>
                   <input value={editForm.city} onChange={e => setEditForm(f => ({ ...f, city: e.target.value }))}
                     placeholder="Jamnagar"
                     className="w-full bg-input border border-theme rounded-xl text-theme text-sm outline-none focus:border-accent transition-colors"  style={{padding:'4px 8px'}}/>
