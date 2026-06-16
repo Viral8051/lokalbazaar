@@ -23,7 +23,7 @@ function PostRow({ post }) {
     return `${Math.floor(diff/86400)}d ago`
   }
   return (
-    <div className="flex items-center gap-3 border-b border-theme last:border-0">
+    <div className="flex items-center gap-3 border-b border-theme last:border-0" style={{padding:'12px 16px'}}>
       {post.image_url
         ? <img src={post.image_url} alt="" className="w-12 h-12 rounded-xl object-cover flex-shrink-0" />
         : <div className="w-12 h-12 rounded-xl bg-surf flex items-center justify-center text-xl flex-shrink-0">🛍️</div>
@@ -141,7 +141,7 @@ export default function AnalyticsPage() {
         {topPost && (
           <div className="" style={{margin:'0 0 12px'}}>
             <div className="text-xs text-hint uppercase tracking-wider" style={{margin : '0 0 12px'}}>Top Post 🏆</div>
-            <div className="bg-accent-dim border border-accent rounded-2xl p-3 flex items-center gap-3" style={{ borderColor:'rgba(255,76,41,0.2)' }}>
+            <div className="bg-accent-dim border border-accent rounded-2xl flex items-center gap-3" style={{ borderColor:'rgba(255,76,41,0.2)', padding:'12px 16px' }}>
               {topPost.image_url
                 ? <img src={topPost.image_url} alt="" className="w-14 h-14 rounded-xl object-cover flex-shrink-0" />
                 : <div className="w-14 h-14 rounded-xl bg-surf flex items-center justify-center text-2xl flex-shrink-0">🛍️</div>
@@ -167,7 +167,7 @@ export default function AnalyticsPage() {
               { tip:'Regular posts se followers badhte hain', icon:'📈' },
               { tip:'Stories dalte raho — 24 ghante mein expire hoti hain', icon:'⚡' },
             ].map((t, i) => (
-              <div key={i} className="flex items-start gap-3 bg-surf border border-theme rounded-xl px-3 py-2.5">
+              <div key={i} className="flex items-start gap-3 bg-surf border border-theme rounded-xl" style={{padding:'12px 16px'}}>
                 <span className="text-base flex-shrink-0">{t.icon}</span>
                 <span className="text-xs text-sub leading-relaxed">{t.tip}</span>
               </div>
