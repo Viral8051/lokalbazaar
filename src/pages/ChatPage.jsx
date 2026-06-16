@@ -286,7 +286,7 @@ export function ChatWindowPage() {
   return (
     <Layout active="chat">
       {/* Header */}
-      <div className="flex items-center gap-3 px-4 py-3 border-b border-theme sticky top-0 bg-theme z-10">
+      <div className="flex items-center gap-3 border-b border-theme sticky top-0 bg-theme z-10" style={{padding:'12px 16px'}}>
         <button onClick={() => navigate('/chat')} className="text-theme/60 hover:text-theme text-xl">←</button>
         <div className="w-9 h-9 rounded-full bg-accent/20 border border-accent/30 flex items-center justify-center text-accent font-bold text-xs flex-shrink-0">
           {initials(partnerName)}
@@ -301,7 +301,7 @@ export function ChatWindowPage() {
       </div>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto scrollbar-hide px-4 py-3 flex flex-col gap-1">
+      <div className="flex-1 overflow-y-auto scrollbar-hide px-4 py-3 flex flex-col gap-1" style={{padding:'12px 16px'}}>
         {loading ? (
           <div className="text-theme/30 text-xs text-center py-8">Loading...</div>
         ) : messages.length === 0 ? (
