@@ -391,7 +391,7 @@ function SellerProfile({ profile, user, fetchProfile }) {
             <div className="w-full bg-input rounded-full h-1.5 mb-2">
               <div className="bg-accent h-1.5 rounded-full transition-all" style={{ width: `${((10 - postsLeft) / 10) * 100}%` }} />
             </div>
-            <button className="w-full bg-accent text-theme text-xs font-medium py-2 rounded-lg hover:bg-accent transition-colors">
+            <button className="w-full bg-accent text-theme text-xs font-medium rounded-lg hover:bg-accent transition-colors" style={{padding:'4px 8px', margin:'12px 0'}}>
               ✦ Premium lo — Unlimited posts
             </button>
           </div>
