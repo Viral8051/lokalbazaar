@@ -350,7 +350,7 @@ export default function NewPostModal({ onClose, onPosted }) {
           {step === 2 && (
             <>
               {/* Mini summary */}
-              <div className="bg-white/5 rounded-xl p-3 flex items-center gap-3">
+              <div className="bg-white/5 rounded-xl flex items-center gap-3" style={{padding:'12px 16px'}}>
                 {imagePreview && <img src={imagePreview} className="w-12 h-12 rounded-lg object-cover flex-shrink-0" />}
                 <div className="min-w-0">
                   <div className="text-sm font-medium text-white truncate">{productName}</div>
@@ -359,7 +359,7 @@ export default function NewPostModal({ onClose, onPosted }) {
               </div>
 
               {/* Description */}
-              <div>
+              <div style={{margin: '12px 0'}}>
                 <label className="text-xs text-white/50 mb-1 block">Description *</label>
                 <div className="relative">
                   <textarea
@@ -368,7 +368,8 @@ export default function NewPostModal({ onClose, onPosted }) {
                     onChange={e => setCaption(e.target.value)}
                     placeholder="Product ke baare mein detail mein batao — size, color, material, occasion..."
                     rows={4}
-                    className="w-full bg-white/10 border border-white/10 rounded-xl px-4 py-3 pr-12 text-white text-sm outline-none focus:border-[#f5a623] transition-colors placeholder:text-white/30 resize-none"
+                    className="w-full bg-white/10 border border-white/10 rounded-xl pr-12 text-white text-sm outline-none focus:border-[#f5a623] transition-colors placeholder:text-white/30 resize-none"
+                    style={{padding:'12px 16px'}}
                   />
                   <button
                     type="button"
