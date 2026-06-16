@@ -238,7 +238,7 @@ function BuyerProfile({ profile, user, fetchProfile }) {
 
         {!editing && (
           <div className="px-4 mt-4">
-            <div className="bg-accent-dim border border-accent rounded-2xl p-4 text-center">
+            <div className="bg-accent-dim border border-accent rounded-2xl p-4 text-center" style={{margin:'0px 16px', padding:'12px 16px'}}>
               <div className="text-2xl mb-1">🛍️</div>
               <p className="text-sm text-sub font-medium">Kuch dhundh rahe ho?</p>
               <p className="text-xs text-hint mt-0.5 mb-3">Apne sheher ke sellers explore karo</p>
