@@ -221,7 +221,7 @@ function BuyerProfile({ profile, user, fetchProfile }) {
                 </button>
               </div>
             ) : (
-              <div className="flex flex-col gap-3">
+              <div className="flex flex-col gap-3" style={{padding: '12px 16px'}}>
                 <InfoRow icon="👤" label="Naam"   value={profile?.owner_name || '—'} />
                 <InfoRow icon="📧" label="Email"  value={profile?.email || '—'} />
                 <InfoRow icon="📞" label="Phone"  value={profile?.phone || 'Add karo'} faded={!profile?.phone} />
@@ -394,7 +394,7 @@ function SellerProfile({ profile, user, fetchProfile }) {
         <div className="px-4">
           <div className="text-xs text-hint uppercase tracking-wider mb-3">Mere Posts ({posts.length})</div>
           {loading ? (
-            <div className="flex flex-col gap-3">{[1,2].map(i => <div key={i} className="h-64 bg-surf rounded-2xl animate-pulse" />)}</div>
+            <div className="flex flex-col gap-3" style={{padding: '12px 16px'}}>{[1,2].map(i => <div key={i} className="h-64 bg-surf rounded-2xl animate-pulse" />)}</div>
           ) : posts.length === 0 ? (
             <div className="text-center py-12 text-hint">
               <div className="text-3xl mb-2">📸</div>
