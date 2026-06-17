@@ -423,7 +423,7 @@ export default function NewPostModal({ onClose, onPosted }) {
                 <label className="text-xs text-white/50 block" style={{margin:'0 0 12px'}}>Price</label>
                 <div className="flex gap-2">
                   <div className="relative flex-1">
-                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-white/40 text-sm">₹</span>
+                    <span className="absolute right-2 top-1/2 -translate-y-1/2 text-white/40 text-sm">₹</span>
                     <input
                       value={price}
                       onChange={e => setPrice(e.target.value)}
