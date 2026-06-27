@@ -44,8 +44,9 @@ export default function Layout({ children, active }) {
           {/* Logo */}
           <div style={{ padding: '20px 20px 16px', borderBottom: '1px solid var(--border)' }}>
             <div style={{ fontSize: 20, fontWeight: 800, letterSpacing: -0.5 }}>
-              <span style={{ color: 'var(--text)' }}>Lokal</span>
-              <span style={{ color: '#FF4C29' }}>Bazaar</span>
+              <span style={{ color: '#FF4C29' }}>V</span>
+              <span style={{ color: 'var(--text)' }}>epa</span>
+              <span style={{ color: '#FF4C29' }}>R</span>
             </div>
             <div style={{ fontSize: 11, color: 'var(--text-hint)', marginTop: 3 }}>
               📍 {profile?.city || 'Jamnagar'}

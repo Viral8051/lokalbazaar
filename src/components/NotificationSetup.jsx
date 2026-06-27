@@ -40,7 +40,7 @@ export default function NotificationSetup() {
     // Listen for foreground messages
     const unsubscribe = onForegroundMessage((payload) => {
       setToast({
-        title: payload.notification?.title || 'LokalBazaar',
+        title: payload.notification?.title || 'VepaR',
         body: payload.notification?.body || '',
       })
     })
