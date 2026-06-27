@@ -60,8 +60,9 @@ export default function HomePage() {
       }}>
         <div>
           <div style={{ fontSize: 18, fontWeight: 800, letterSpacing: -0.5, lineHeight: 1 }}>
-            <span style={{ color: 'var(--text)' }}>Lokal</span>
-            <span style={{ color: '#FF4C29' }}>Bazaar</span>
+            <span style={{ color: '#FF4C29' }}>V</span>
+            <span style={{ color: 'var(--text)' }}>epa</span>
+            <span style={{ color: '#FF4C29' }}>R</span>
           </div>
           <div style={{ fontSize: 11, color: 'var(--text-hint)', marginTop: 2 }}>
             📍 {profile?.city || 'Jamnagar'}

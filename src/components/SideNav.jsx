@@ -18,7 +18,7 @@ export default function SideNav({ active }) {
     <div className="fixed h-screen w-64 lg:w-72 flex flex-col border-r border-white/10 px-4 py-6 bg-[#0f0a1e]">
       {/* Logo */}
       <div className="mb-8 px-2">
-        <h1 className="text-xl font-bold text-[#f5a623]">🛍️ LokalBazaar</h1>
+        <h1 className="text-xl font-bold text-[#f5a623]">🛍️ VepaR</h1>
         <p className="text-xs text-white/30 mt-0.5">Apna ghar, apna bazaar</p>
       </div>
 

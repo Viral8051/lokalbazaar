@@ -47,9 +47,9 @@ export default function InstallPrompt() {
   return (
     <div className="fixed bottom-24 left-4 right-4 md:left-auto md:right-6 md:w-80 bg-[#1a1035] border border-[#f5a623]/30 rounded-2xl z-50 shadow-xl" style={{padding:'12px 16px'}}>
       <div className="flex items-start gap-3" style={{margin: '0 0 12px'}}>
-        <img src="/icon-192.png" alt="LokalBazaar" className="w-12 h-12 rounded-xl flex-shrink-0" />
+        <img src="/icon-192.png" alt="VepaR" className="w-12 h-12 rounded-xl flex-shrink-0" />
         <div className="flex-1">
-          <div className="text-sm font-semibold text-white">LokalBazaar install karo</div>
+          <div className="text-sm font-semibold text-white">VepaR install karo</div>
           <div className="text-xs text-white/50 mt-0.5">Home screen pe add karo — app jaisa feel</div>
         </div>
         <button onClick={() => setShown(false)} className="text-white/30 hover:text-white text-lg leading-none flex-shrink-0">✕</button>
