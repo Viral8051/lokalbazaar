@@ -154,7 +154,7 @@ export default function LoginPage() {
       <div style={{ textAlign: 'center', marginBottom: 28 }}>
         <div style={{ fontSize: 48, marginBottom: 8 }}>🛍️</div>
         <h1 style={{ fontSize: 24, fontWeight: 800, color: 'var(--text)' }}>
-          Lokal<span style={{ color: '#FF4C29' }}>Bazaar</span>
+          <span style={{ color: '#FF4C29' }}>V</span>epa<span style={{ color: '#FF4C29' }}>R</span>
         </h1>
         <p style={{ fontSize: 13, color: 'var(--text-sub)', marginTop: 4 }}>Apna ghar, apna bazaar</p>
       </div>
